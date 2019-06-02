@@ -1,0 +1,8 @@
+{
+  "name": "crazytown",
+  "version": "1.0.0",
+  "description": "Mad libs mafia party game",
+  "main": "index.js",
+  "author": "Eric Peterson",
+  "private": true
+}

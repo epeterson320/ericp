@@ -1,0 +1,7 @@
+{
+  "name": "host",
+  "version": "1.0.0",
+  "description": "Crazytown game host server",
+  "main": "index.js",
+  "license": "MIT"
+}

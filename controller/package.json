@@ -1,0 +1,7 @@
+{
+  "name": "controller",
+  "version": "1.0.0",
+  "description": "Crazytown player controller client",
+  "main": "index.js",
+  "license": "MIT"
+}

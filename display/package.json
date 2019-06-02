@@ -1,0 +1,7 @@
+{
+  "name": "display",
+  "version": "1.0.0",
+  "description": "Crazytown public display client",
+  "main": "index.js",
+  "license": "MIT"
+}

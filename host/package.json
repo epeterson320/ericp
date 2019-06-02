@@ -2,6 +2,9 @@
   "name": "host",
   "version": "1.0.0",
   "description": "Crazytown game host server",
-  "main": "index.js",
-  "license": "MIT"
+  "main": "src/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^7.0.0"
+  }
 }

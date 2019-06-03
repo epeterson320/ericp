@@ -1,8 +1,9 @@
-const ws = require('ws');
+module.exports = class GameHost {
+  constructor(adapter) {
+    this.adapter = adapter;
+  }
 
-const server = {}; // TODO create a nodejs server
-new ws.Server({
-  server,
-});
-
-// TODO start the server
+  run() {
+    this.adapter.run();
+  }
+};

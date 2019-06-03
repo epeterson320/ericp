@@ -1,4 +1,4 @@
-const GameHost = require("./src");
+const GameHost = require("core");
 
 const ccAdapter = {
   run() {

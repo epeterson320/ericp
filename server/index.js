@@ -1,4 +1,4 @@
-const GameHost = require("./src");
+const GameHost = require("core");
 const WebSocket = require("ws");
 
 const server = {}; // TODO create a nodejs server

@@ -1,0 +1,11 @@
+{
+  "name": "chromecast",
+  "version": "1.0.0",
+  "description": "Chromecast app to host and display game",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "host": "1.0.0",
+    "display": "1.0.0"
+  }
+}

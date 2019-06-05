@@ -1,0 +1,17 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "Crazytown game engine",
+  "main": "index.js",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "redux-actions": "^2.6.5",
+    "rxjs": "^6.5.2"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

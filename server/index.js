@@ -1,16 +1,10 @@
-const GameHost = require("core");
+const Game = require("core");
 const WebSocket = require("ws");
 
-const server = {}; // TODO create a nodejs server
+const server = {};
 new WebSocket.Server({
   server
 });
 
-const wsAdapter = {
-  run() {
-    // TODO
-  }
-};
-
-const wsGameHost = new GameHost(wsAdapter);
+const game = new Game();
 wsGameHost.run();

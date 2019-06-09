@@ -11,20 +11,17 @@ const log = require("debug")("crazytown:core:update");
 // needs an update function not like:
 //   (state, action) => state
 // but more like:
-//   (state, action) => (state, tx[])
+//   (state, action) => (state, effect[])
 
 module.exports = function update(state, action) {
   const { type, payload, meta } = action;
+  const { txAudience$ } = this;
   switch (type) {
     case "JOIN": {
       const { name } = payload;
       state.players[meta.from] = { name };
-      this.txMessage$.next(
-        new Message({
-          type: "PLAYER_JOINED",
-          body: { name }
-        })
-      );
+      txAudience$.next(Message({ type: "PLAYER_JOINED", body: { name } }));
+      log("Player joined: $o", payload);
       return state;
     }
     default: {

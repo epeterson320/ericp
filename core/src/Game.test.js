@@ -5,7 +5,7 @@ const Message = require("./Message");
 describe("Game", () => {
   it("Ignores unknown messages", () => {
     const game = new Game();
-    const message = new Message({
+    const message = Message({
       from: "123",
       to: "HOST",
       type: "uas;dlkasn;l",
@@ -14,10 +14,15 @@ describe("Game", () => {
       }
     });
 
-    game.txMessage$.subscribe(() => {
-      throw new Error("Fail");
-    });
-    game.rxMessage$.next(message);
+    function fail() {
+      throw new Error("fail");
+    }
+
+    game.txPlayer$.subscribe(fail);
+    game.txAllPlayer$.subscribe(fail);
+    game.txAudience$.subscribe(fail);
+
+    game.rxPlayer$.next(message);
   });
 
   it("Responds when a player joins", () => {
@@ -25,7 +30,7 @@ describe("Game", () => {
 
     const game = new Game();
 
-    const message = new Message({
+    const message = Message({
       from: "PLAYER/ASPLK10A",
       to: "HOST",
       type: "JOIN",
@@ -34,7 +39,7 @@ describe("Game", () => {
       }
     });
 
-    const expected = new Message({
+    const expected = Message({
       from: "HOST",
       to: "AUDIENCE",
       type: "PLAYER_JOINED",
@@ -43,9 +48,9 @@ describe("Game", () => {
       }
     });
 
-    game.txMessage$.subscribe(gameMessage => {
+    game.txAudience$.subscribe(gameMessage => {
       expect(gameMessage).toMatchObject(expected);
     });
-    game.rxMessage$.next(message);
+    game.rxPlayer$.next(message);
   });
 });

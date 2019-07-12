@@ -4,5 +4,18 @@
   "description": "Mad libs mafia party game",
   "author": "Eric Peterson",
   "private": true,
-  "workspaces": ["display", "controller", "core", "server", "chromecast"]
+  "devDependencies": {
+    "lerna": "^3.15.0"
+  },
+  "scripts": {
+    "clean": "lerna clean",
+    "start": "lerna run start --parallel"
+  },
+  "workspaces": [
+    "packages/display",
+    "packages/controller",
+    "packages/core",
+    "packages/server",
+    "packages/chromecast"
+  ]
 }

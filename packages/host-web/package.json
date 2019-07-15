@@ -1,10 +1,9 @@
 {
-  "name": "server",
+  "name": "host-web",
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
   "dependencies": {
-    "core": "^1.0.0",
-    "ws": "^7.0.0"
+    "game-core": "^1.0.0"
   }
 }

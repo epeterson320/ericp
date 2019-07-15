@@ -1,9 +1,13 @@
 {
-  "name": "controller",
+  "name": "ui-controller",
   "version": "1.0.0",
   "private": true,
   "description": "Crazytown player controller client",
   "dependencies": {
+    "eslint": "^5.16.0",
+    "husky": "^3.0.0",
+    "lint-staged": "^9.2.0",
+    "prettier": "^1.18.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
@@ -12,10 +16,21 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "browserslist": {
     "production": [

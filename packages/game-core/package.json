@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "game-core",
   "version": "1.0.0",
   "description": "Crazytown game engine",
   "main": "index.js",

@@ -7,15 +7,16 @@
   "devDependencies": {
     "lerna": "^3.15.0"
   },
+  "prettier": {
+    "singleQuote": true,
+    "useTabs": true,
+    "trailingComma": "all"
+  },
   "scripts": {
     "clean": "lerna clean",
-    "start": "lerna run start --parallel"
+    "start": "lerna run --scope ui-* --scope host-web --parallel start",
+    "lint": "lerna run lint --stream",
+    "test": "CI=true lerna run --stream test"
   },
-  "workspaces": [
-    "packages/display",
-    "packages/controller",
-    "packages/core",
-    "packages/server",
-    "packages/chromecast"
-  ]
+  "workspaces": ["packages/*"]
 }

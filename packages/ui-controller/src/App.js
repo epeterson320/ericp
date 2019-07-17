@@ -1,15 +1,9 @@
 import React from 'react';
-import './App.css';
+import JoinGameScreen from './JoinGameScreen';
+import GameScreen from './GameScreen';
 
-function App() {
-	return (
-		<div className="App">
-			<h1>Welcome to Crazytown</h1>
-			<p>Searching for games...</p>
-			{/* TODO: error connecting to server, start game, join game, connect to chromecast */}
-			<button disabled>Enter</button>
-		</div>
-	);
+export default function App() {
+	const [game, setGame] = React.useState(null);
+	if (game) return <GameScreen game={game} />;
+	return <JoinGameScreen onGameJoined={setGame} onGameStarted={setGame} />;
 }
-
-export default App;

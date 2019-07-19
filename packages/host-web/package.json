@@ -1,9 +1,0 @@
-{
-  "name": "host-web",
-  "version": "1.0.0",
-  "main": "index.js",
-  "private": true,
-  "dependencies": {
-    "game-core": "^1.0.0"
-  }
-}

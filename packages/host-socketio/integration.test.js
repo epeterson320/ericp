@@ -21,13 +21,12 @@ class TestServer extends Server {
 }
 
 class TestClient extends Client {
-	constructor(path = '/') {
+	constructor(path) {
 		super(url + path, socketConfig);
 		this.openCb = this.open;
 		this.closeCb = this.close;
 		this.open = () =>
 			new Promise((res, rej) => {
-				console.log('opening');
 				this.once('connect', res);
 				this.once('connect_error', rej);
 				this.openCb();
@@ -37,72 +36,70 @@ class TestClient extends Client {
 				this.once('disconnect', res);
 				this.closeCb();
 			});
-		this.next = () =>
+		this.next = (eventName = 'message') =>
 			new Promise(resolve => {
-				this.once('message', resolve);
+				this.once(eventName, resolve);
 			});
 	}
 }
 
+let server, client1, client2;
+
+beforeEach(() => {
+	server = new TestServer();
+});
+
+afterEach(async () => {
+	if (server.listening) await server.close();
+	if (client1 && client1.connected) await client1.close();
+	if (client2 && client2.connected) await client2.close();
+	server = client1 = client2 = null;
+});
+
 describe('server', () => {
 	test('starts and stops', async () => {
-		const server = new TestServer();
 		await server.listen();
 		await server.close();
 	});
 
 	test('accepts connections', async () => {
-		const server = new TestServer();
-		const client = new TestClient();
-
 		await server.listen();
-		await client.open();
-		await client.close();
-		await server.close();
-	});
-
-	test('sends messages', async () => {
-		const server = new TestServer();
-		await server.listen();
-		const client = new TestClient();
-		client.connect();
-		const message = await client.next();
-		await client.close();
+		client1 = new TestClient('/');
+		await client1.open();
+		await client1.close();
 		await server.close();
 	});
 });
 
 describe('/games', () => {
 	test('publishes games at websocket, creates via POST', async () => {
-		const server = new TestServer();
-		const client1 = new TestClient('/games');
-		const client2 = new TestClient('/games');
+		client1 = new TestClient('/games');
+		client2 = new TestClient('/games');
 
 		await server.listen();
 
-		client1.open();
 		const p1Games1 = client1.next();
+		client1.open();
 		await expect(p1Games1).resolves.toEqual([]);
 
+		const p1Games2 = client1.next();
+		client1.emit('create', { hostPlayer: { name: 'Alice' } });
+		await expect(p1Games2).resolves.toEqual([
+			{ id: expect.any(String), hostPlayer: { name: 'Alice' } },
+		]);
+
+		const p2Games1 = client2.next();
+		client2.connect();
+		await expect(p2Games1).resolves.toHaveLength(1);
+
+		const p2Games2 = client2.next();
+		const p1Games3 = client1.next();
+		client2.send('create', { hostPlayer: { name: 'Bob' } });
+
+		expect(p2Games2).resolves.toHaveLength(2);
+		expect(p1Games3).resolves.toHaveLength(2);
 		await client1.close();
 		await client2.close();
 		await server.close();
-
-		return;
-
-		client1.send('create', { hostPlayer: { name: 'Alice' } });
-		const p1Games2 = await client1.nextMessage('games');
-		expect(p1Games2).toEqual([{ hostPlayer: { name: 'Alice' } }]);
-
-		client2.connect();
-		const p2Games1 = await client2.nextMessage('games');
-		expect(p2Games1).toHaveLength(1);
-
-		client2.send('create', { hostPlayer: { name: 'Bob' } });
-		const p2Games2 = await client2.nextMessage('games');
-		const p1Games3 = await client1.nextMessage('games');
-
-		expect(p2Games2).toHaveLength(2);
-		expect(p1Games3).toHaveLength(2);
 	});
 });

@@ -1,11 +1,29 @@
 import React from 'react';
 import debug from 'debug';
+import Socket from 'socket.io-client';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
 export default function JoinGameScreen({ onGameStarted, onGameJoined }) {
-	const listing = useGameListing();
-	const { loading, error, games, refetch } = listing;
+	const [loading, setLoading] = React.useState(true);
+	const [games, setGames] = React.useState([]);
+	const gamesRef = React.useRef(
+		Socket(process.env.REACT_APP_HOST_SOCKETIO + '/games'),
+	);
+	let error,
+		refetch = null;
+
+	React.useEffect(() => {
+		const games = gamesRef.current;
+		games.on('message', newGames => {
+			setGames(newGames);
+			setLoading(false);
+		});
+
+		return () => {
+			games.close();
+		};
+	}, []);
 
 	return (
 		<div className="App">
@@ -16,8 +34,8 @@ export default function JoinGameScreen({ onGameStarted, onGameJoined }) {
 			<button
 				disabled={loading || error}
 				onClick={() => {
-					const game = { id: 1 };
-					onGameStarted(game);
+					gamesRef.current.emit('create', { hostPlayer: { name: 'Eric' } });
+					//onGameStarted(game);
 				}}
 			>
 				Start Game
@@ -31,43 +49,7 @@ export default function JoinGameScreen({ onGameStarted, onGameJoined }) {
 			>
 				Join Game
 			</button>
+			<pre>{JSON.stringify(games, null, 2)}</pre>
 		</div>
 	);
-}
-
-function useGameListing() {
-	const [loading, setLoading] = React.useState(true);
-	const [games, setGames] = React.useState([]);
-	const [error, setError] = React.useState(null);
-	const [refetchCounter, setRefetchCounter] = React.useState(0);
-
-	React.useEffect(() => {
-		const ws = new WebSocket(`ws://${process.env.REACT_APP_WS_HOST}/games`);
-		ws.onopen = () => {
-			setLoading(false);
-		};
-		ws.onerror = event => {
-			setError(new Error('Error connecting to server.'));
-			setLoading(false);
-			log('Websocket Error Event: %O', event);
-		};
-		ws.onmessage = msg => {
-			setGames(JSON.parse(msg));
-		};
-
-		return () => {
-			delete ws.onopen;
-			delete ws.onerror;
-			delete ws.onmessage;
-			ws.close(1000);
-		};
-	}, [refetchCounter]);
-
-	const refetch = () => {
-		setLoading(true);
-		setError(null);
-		setRefetchCounter(refetchCounter + 1);
-	};
-
-	return { loading, games, error, refetch };
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import debug from 'debug';
-import { Spinner, Button } from 'reactstrap';
+import { Spinner, Button, Form, Input } from 'reactstrap';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
@@ -25,8 +25,8 @@ export default function JoinGameScreen({ onGameJoined }) {
 				</>
 			) : (
 				<PlayerNameInput
-					onSubmitName={() => {
-						log('Submitted name');
+					onSubmitName={name => {
+						log('Submitted name %s', name);
 					}}
 				/>
 			)}
@@ -35,14 +35,41 @@ export default function JoinGameScreen({ onGameJoined }) {
 }
 
 function usePlayerProfile() {
-	return { player: null, loading: true };
+	return { player: null, loading: false };
 }
 
 function PlayerThumbnail({ player, loading }) {
-	if (loading) return <Spinner />;
-	return 'PT';
+	return (
+		<div className="mb-3">
+			<div
+				className="d-flex border justify-content-center align-items-center"
+				style={{ height: 120, width: 120 }}
+			>
+				{loading ? <Spinner /> : <svg>{player.svg}</svg>}
+			</div>
+			{loading ? '' : player.name}
+		</div>
+	);
 }
 
-function PlayerNameInput() {
-	return 'PNI';
+function PlayerNameInput({ onSubmitName }) {
+	const [name, setName] = React.useState('');
+	return (
+		<Form>
+			<Input
+				type="text"
+				placeholder="Your name"
+				value={name}
+				onChange={e => setName(e.target.value)}
+				className="mb-2"
+			/>
+			<Button
+				type="button"
+				className="float-right"
+				onClick={() => onSubmitName(name)}
+			>
+				Next
+			</Button>
+		</Form>
+	);
 }

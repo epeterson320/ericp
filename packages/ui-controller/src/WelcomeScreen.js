@@ -1,6 +1,8 @@
 import React from 'react';
 import debug from 'debug';
+import { Link } from 'react-router-dom';
 import { Spinner, Button, Form, Input } from 'reactstrap';
+import kebabCase from 'lodash/kebabCase';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
@@ -24,11 +26,7 @@ export default function JoinGameScreen({ onGameJoined }) {
 					</Button>
 				</>
 			) : (
-				<PlayerNameInput
-					onSubmitName={name => {
-						log('Submitted name %s', name);
-					}}
-				/>
+				<PlayerNameInput />
 			)}
 		</div>
 	);
@@ -64,9 +62,13 @@ function PlayerNameInput({ onSubmitName }) {
 				className="mb-2"
 			/>
 			<Button
-				type="button"
+				to={`/u/${kebabCase(name)}/face`}
+				tag={Link}
+				disabled={!name}
 				className="float-right"
-				onClick={() => onSubmitName(name)}
+				onClick={() => {
+					log('Submitted name %s', name);
+				}}
 			>
 				Next
 			</Button>

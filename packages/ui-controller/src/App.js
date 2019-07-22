@@ -1,9 +1,18 @@
-import React from 'react';
-import JoinGameScreen from './JoinGameScreen';
-import GameScreen from './GameScreen';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const WelcomeScreen = lazy(() => import('./WelcomeScreen'));
+const DrawFaceScreen = lazy(() => import('./DrawFaceScreen'));
 
 export default function App() {
-	const [game, setGame] = React.useState(null);
-	if (game) return <GameScreen game={game} />;
-	return <JoinGameScreen onGameJoined={setGame} />;
+	return (
+		<Router>
+			<Suspense fallback={<div>Loading...</div>}>
+				<Switch>
+					<Route path="/" exact component={WelcomeScreen} />
+					<Route path="/u/:player/face" component={DrawFaceScreen} />
+				</Switch>
+			</Suspense>
+		</Router>
+	);
 }

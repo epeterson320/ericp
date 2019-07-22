@@ -4,13 +4,16 @@
   "private": true,
   "description": "Crazytown player controller client",
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "eslint": "^5.16.0",
     "husky": "^3.0.0",
     "lint-staged": "^9.2.0",
+    "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
+    "reactstrap": "^8.0.1",
     "socket.io": "^2.2.0"
   },
   "scripts": {

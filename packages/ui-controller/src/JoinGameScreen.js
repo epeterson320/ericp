@@ -1,55 +1,48 @@
 import React from 'react';
 import debug from 'debug';
-import Socket from 'socket.io-client';
+import { Spinner, Button } from 'reactstrap';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
-export default function JoinGameScreen({ onGameStarted, onGameJoined }) {
-	const [loading, setLoading] = React.useState(true);
-	const [games, setGames] = React.useState([]);
-	const gamesRef = React.useRef(
-		Socket(process.env.REACT_APP_HOST_SOCKETIO + '/games'),
-	);
-	let error,
-		refetch = null;
-
-	React.useEffect(() => {
-		const games = gamesRef.current;
-		games.on('message', newGames => {
-			setGames(newGames);
-			setLoading(false);
-		});
-
-		return () => {
-			games.close();
-		};
-	}, []);
-
+export default function JoinGameScreen({ onGameJoined }) {
+	const { player, loading } = usePlayerProfile();
 	return (
-		<div className="App">
+		<div className="d-flex flex-column align-items-center">
 			<h1>Welcome to Crazytown</h1>
-			{loading ? <p>Searching for games...</p> : null}
-			{error ? <pre>{error.message}</pre> : null}
-			{error ? <button onClick={refetch}>Retry</button> : null}
-			<button
-				disabled={loading || error}
-				onClick={() => {
-					gamesRef.current.emit('create', { hostPlayer: { name: 'Eric' } });
-					//onGameStarted(game);
-				}}
-			>
-				Start Game
-			</button>
-			<button
-				disabled={loading || error}
-				onClick={() => {
-					const game = games[0];
-					onGameJoined(game);
-				}}
-			>
-				Join Game
-			</button>
-			<pre>{JSON.stringify(games, null, 2)}</pre>
+			{player || loading ? (
+				<>
+					<PlayerThumbnail player={player} loading={loading} />
+					<Button
+						disabled={loading}
+						onClick={() => {
+							log('Joined game');
+							const game = {}; // TODO connect to game.
+							onGameJoined(game);
+						}}
+					>
+						Start
+					</Button>
+				</>
+			) : (
+				<PlayerNameInput
+					onSubmitName={() => {
+						log('Submitted name');
+					}}
+				/>
+			)}
 		</div>
 	);
+}
+
+function usePlayerProfile() {
+	return { player: null, loading: true };
+}
+
+function PlayerThumbnail({ player, loading }) {
+	if (loading) return <Spinner />;
+	return 'PT';
+}
+
+function PlayerNameInput() {
+	return 'PNI';
 }

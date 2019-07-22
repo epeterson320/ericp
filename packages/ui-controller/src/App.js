@@ -5,5 +5,5 @@ import GameScreen from './GameScreen';
 export default function App() {
 	const [game, setGame] = React.useState(null);
 	if (game) return <GameScreen game={game} />;
-	return <JoinGameScreen onGameJoined={setGame} onGameStarted={setGame} />;
+	return <JoinGameScreen onGameJoined={setGame} />;
 }

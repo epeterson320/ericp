@@ -1,0 +1,4 @@
+{
+	"editor.formatOnSave": true,
+	"jest.autoEnable": false // I don't know how to do this with react-scripts test and monorepo
+}

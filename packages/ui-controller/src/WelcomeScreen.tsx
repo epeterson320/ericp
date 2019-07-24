@@ -1,12 +1,11 @@
 import React from 'react';
 import debug from 'debug';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Spinner, Button, Form, Input } from 'reactstrap';
-import kebabCase from 'lodash/kebabCase';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
-export default function JoinGameScreen({ onGameJoined }) {
+const JoinGameScreen: React.FunctionComponent<RouteComponentProps> = () => {
 	const { player, loading } = usePlayerProfile();
 	return (
 		<div className="d-flex flex-column align-items-center">
@@ -18,8 +17,7 @@ export default function JoinGameScreen({ onGameJoined }) {
 						disabled={loading}
 						onClick={() => {
 							log('Joined game');
-							const game = {}; // TODO connect to game.
-							onGameJoined(game);
+							// TODO connect to game.
 						}}
 					>
 						Start
@@ -30,27 +28,27 @@ export default function JoinGameScreen({ onGameJoined }) {
 			)}
 		</div>
 	);
-}
+};
 
 function usePlayerProfile() {
 	return { player: null, loading: false };
 }
 
-function PlayerThumbnail({ player, loading }) {
+function PlayerThumbnail(props: any) {
 	return (
 		<div className="mb-3">
 			<div
 				className="d-flex border justify-content-center align-items-center"
 				style={{ height: 120, width: 120 }}
 			>
-				{loading ? <Spinner /> : <svg>{player.svg}</svg>}
+				{props.loading ? <Spinner /> : <svg>{props.player.svg}</svg>}
 			</div>
-			{loading ? '' : player.name}
+			{props.loading ? '' : props.player.name}
 		</div>
 	);
 }
 
-function PlayerNameInput({ onSubmitName }) {
+function PlayerNameInput() {
 	const [name, setName] = React.useState('');
 	return (
 		<Form>
@@ -62,7 +60,7 @@ function PlayerNameInput({ onSubmitName }) {
 				className="mb-2"
 			/>
 			<Button
-				to={`/u/${kebabCase(name)}/face`}
+				to="/draw"
 				tag={Link}
 				disabled={!name}
 				className="float-right"
@@ -75,3 +73,5 @@ function PlayerNameInput({ onSubmitName }) {
 		</Form>
 	);
 }
+
+export default JoinGameScreen;

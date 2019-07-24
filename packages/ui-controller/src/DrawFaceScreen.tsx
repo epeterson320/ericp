@@ -2,11 +2,18 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import { SketchField, Tools } from 'react-sketch';
 import debug from 'debug';
+import constant from 'lodash/constant';
+import noop from 'lodash/noop';
+import { RouteComponentProps } from 'react-router';
 
 const log = debug('crazytown:DrawFaceScreen');
 
-export default function DrawFaceScreen() {
-	const sketchRef = React.useRef();
+const DrawFaceScreen: React.FunctionComponent<RouteComponentProps> = () => {
+	const sketchRef = React.useRef({
+		canUndo: constant(false),
+		undo: noop,
+		toDataURL: constant(''),
+	});
 	const [canUndo, setCanUndo] = React.useState(false);
 	return (
 		<div className="d-flex flex-column align-items-center">
@@ -31,8 +38,11 @@ export default function DrawFaceScreen() {
 				</Button>
 				<Button
 					onClick={() => {
-						const dataURL = sketchRef.current.toDataURL();
-						log('Submitted image %o', dataURL);
+						log(sketchRef.current);
+						//const svg = sketchRef.current._fc.toSVG();
+						//const svg = sketchRef.current.toJSON();
+						const img = sketchRef.current.toDataURL();
+						log('Submitted image %o', img);
 					}}
 				>
 					Done
@@ -40,4 +50,6 @@ export default function DrawFaceScreen() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default DrawFaceScreen;

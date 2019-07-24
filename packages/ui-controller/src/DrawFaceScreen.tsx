@@ -5,16 +5,21 @@ import debug from 'debug';
 import constant from 'lodash/constant';
 import noop from 'lodash/noop';
 import { RouteComponentProps } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { setPlayer } from './redux';
 
 const log = debug('crazytown:DrawFaceScreen');
 
-const DrawFaceScreen: React.FunctionComponent<RouteComponentProps> = () => {
+const DrawFaceScreen = ({ history, location }: RouteComponentProps) => {
 	const sketchRef = React.useRef({
 		canUndo: constant(false),
 		undo: noop,
 		toDataURL: constant(''),
 	});
 	const [canUndo, setCanUndo] = React.useState(false);
+	const dispatch = useDispatch();
+
+	log(location.state);
 	return (
 		<div className="d-flex flex-column align-items-center">
 			<h1 className="mb-3">Draw your big face</h1>
@@ -41,8 +46,10 @@ const DrawFaceScreen: React.FunctionComponent<RouteComponentProps> = () => {
 						log(sketchRef.current);
 						//const svg = sketchRef.current._fc.toSVG();
 						//const svg = sketchRef.current.toJSON();
-						const img = sketchRef.current.toDataURL();
-						log('Submitted image %o', img);
+						const dataUrl = sketchRef.current.toDataURL();
+						log('Submitted image %o', dataUrl);
+						dispatch(setPlayer({ name: location.state.name, src: dataUrl }));
+						history.goBack();
 					}}
 				>
 					Done

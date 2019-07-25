@@ -1,28 +1,31 @@
 const Client = require('socket.io-client');
 const { promisify } = require('util');
+const log = require('debug')('crazytown:test');
 const Server = require('.');
 
-const HOST = 'localhost';
-const PORT = '3000';
 const socketConfig = {
 	autoConnect: false,
 	transports: ['websocket'],
 	forceNew: true,
 	reconnection: false,
 };
-const url = `http://${HOST}:${PORT}`;
 
 class TestServer extends Server {
 	constructor(...args) {
 		super(...args);
-		this.listen = promisify(this.listen).bind(this, PORT);
+		this.listen = promisify(this.listen);
 		this.close = promisify(this.close);
+		this.on('listening', () => {
+			const { address, port } = this.address();
+			this.url = `http://[${address}]:${port}`;
+			log('listening on %s', this.url);
+		});
 	}
 }
 
 class TestClient extends Client {
-	constructor(path) {
-		super(url + path, socketConfig);
+	constructor(url) {
+		super(url, socketConfig);
 		this.openCb = this.open;
 		this.closeCb = this.close;
 		this.open = () =>
@@ -64,7 +67,7 @@ describe('server', () => {
 
 	test('accepts connections', async () => {
 		await server.listen();
-		client1 = new TestClient('/');
+		client1 = new TestClient(server.url);
 		await client1.open();
 		await client1.close();
 		await server.close();
@@ -73,10 +76,10 @@ describe('server', () => {
 
 describe('/games', () => {
 	test('publishes games at websocket, creates via POST', async () => {
-		client1 = new TestClient('/games');
-		client2 = new TestClient('/games');
-
 		await server.listen();
+
+		client1 = new TestClient(server.url + '/games');
+		client2 = new TestClient(server.url + '/games');
 
 		const p1Games1 = client1.next();
 		client1.open();

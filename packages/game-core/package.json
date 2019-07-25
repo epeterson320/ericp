@@ -1,17 +1,18 @@
 {
-  "name": "game-core",
-  "version": "1.0.0",
-  "description": "Crazytown game engine",
-  "main": "index.js",
-  "dependencies": {
-    "debug": "^4.1.1",
-    "redux-actions": "^2.6.5",
-    "rxjs": "^6.5.2"
-  },
-  "peerDependencies": {
-    "jest": "^24.7.0"
-  },
-  "scripts": {
-    "test": "jest"
-  }
+	"name": "game-core",
+	"version": "1.0.0",
+	"description": "Crazytown game engine",
+	"main": "index.js",
+	"private": true,
+	"dependencies": {
+		"debug": "^4.1.1",
+		"rxjs": "^6.5.2"
+	},
+	"devDependencies": {
+		"react-scripts": "^3.0.0",
+		"typescript": "^3.5.3"
+	},
+	"scripts": {
+		"test": "react-scripts test"
+	}
 }

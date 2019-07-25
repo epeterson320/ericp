@@ -30,7 +30,7 @@ const playerSlice = createSlice({
 
 type Dispatch = ThunkDispatch<PlayerState, null, AnyAction>;
 
-export const setPlayer = (player: Player) => (dispatch: Dispatch) => {
+const setPlayer = (player: Player) => (dispatch: Dispatch) => {
 	dispatch(playerSlice.actions.setPlayer(player));
 	localforage.setItem('player', player).catch(e => {
 		log('Failed to save player');
@@ -38,7 +38,7 @@ export const setPlayer = (player: Player) => (dispatch: Dispatch) => {
 	});
 };
 
-export const loadPlayer = () => (dispatch: Dispatch) => {
+const loadPlayer = () => (dispatch: Dispatch) => {
 	dispatch(playerSlice.actions.setLoading());
 	localforage
 		.getItem<Player>('player')

@@ -1,31 +1,20 @@
 import React from 'react';
 import debug from 'debug';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Spinner, Button, Form, Input } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Spinner, Button, Input, FormGroup } from 'reactstrap';
 import { useSelector } from 'react-redux';
-import { State, PlayerState, Player } from './redux';
+import { selectors, Player } from './player';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
-const JoinGameScreen = ({ history }: RouteComponentProps) => {
-	const player: PlayerState = useSelector((state: State) => state.player);
+const WelcomeScreen: ScreenFC = () => {
+	const player = useSelector(selectors.getPlayer);
 
 	return (
 		<div className="d-flex flex-column align-items-center">
 			<h1>Welcome to Crazytown</h1>
 			{player !== null ? (
-				<>
-					<PlayerThumbnail player={player} />
-					<Button
-						disabled={player === 'loading'}
-						onClick={() => {
-							log('Joined game');
-							// TODO connect to game.
-						}}
-					>
-						Start
-					</Button>
-				</>
+				<StartGameControl player={player} />
 			) : (
 				<PlayerNameInput />
 			)}
@@ -33,29 +22,45 @@ const JoinGameScreen = ({ history }: RouteComponentProps) => {
 	);
 };
 
-function PlayerThumbnail({ player }: { player: Player | 'loading' }) {
+function StartGameControl({ player }: { player: Player | 'loading' }) {
 	return (
-		<div className="mb-3">
-			<div
-				className="d-flex border justify-content-center align-items-center"
-				style={{ height: 120, width: 120 }}
-			>
-				{player === 'loading' ? (
-					<Spinner />
-				) : (
-					<img className="h-100" src={player.src} />
-				)}
+		<>
+			<div className="mb-3">
+				<div
+					className="d-flex border justify-content-center align-items-center"
+					style={{ height: 120, width: 120 }}
+				>
+					{player === 'loading' ? (
+						<Spinner />
+					) : (
+						<img
+							className="h-100"
+							alt={`${player.name}'s Face`}
+							src={player.src}
+						/>
+					)}
+				</div>
+				{player === 'loading' ? '' : player.name}
 			</div>
-			{player === 'loading' ? '' : player.name}
-		</div>
+			<Button
+				disabled={player === 'loading'}
+				onClick={() => {
+					log('Joined game');
+					// TODO connect to game.
+				}}
+			>
+				Start
+			</Button>
+		</>
 	);
 }
 
 const PlayerNameInput = () => {
 	const [name, setName] = React.useState('');
 	return (
-		<Form>
+		<FormGroup inline>
 			<Input
+				autoFocus
 				type="text"
 				placeholder="Your name"
 				value={name}
@@ -63,11 +68,11 @@ const PlayerNameInput = () => {
 				className="mb-2"
 			/>
 			<Button
+				tag={Link}
 				to={{
 					pathname: '/draw',
 					state: { name },
 				}}
-				tag={Link}
 				disabled={!name}
 				className="float-right"
 				onClick={() => {
@@ -76,8 +81,8 @@ const PlayerNameInput = () => {
 			>
 				Next
 			</Button>
-		</Form>
+		</FormGroup>
 	);
 };
 
-export default JoinGameScreen;
+export default WelcomeScreen;

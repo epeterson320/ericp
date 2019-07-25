@@ -4,13 +4,12 @@ import { SketchField, Tools } from 'react-sketch';
 import debug from 'debug';
 import constant from 'lodash/constant';
 import noop from 'lodash/noop';
-import { RouteComponentProps } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { setPlayer } from './redux';
+import { setPlayer } from './player';
 
 const log = debug('crazytown:DrawFaceScreen');
 
-const DrawFaceScreen = ({ history, location }: RouteComponentProps) => {
+const DrawFaceScreen: ScreenFC = ({ history, location }) => {
 	const sketchRef = React.useRef({
 		canUndo: constant(false),
 		undo: noop,

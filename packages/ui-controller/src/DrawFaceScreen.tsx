@@ -5,7 +5,7 @@ import debug from 'debug';
 import constant from 'lodash/constant';
 import noop from 'lodash/noop';
 import { useDispatch } from 'react-redux';
-import { actions } from './player';
+import { actions, Player } from './player';
 
 const log = debug('crazytown:DrawFaceScreen');
 
@@ -47,9 +47,8 @@ const DrawFaceScreen: ScreenFC = ({ history, location }) => {
 						//const svg = sketchRef.current.toJSON();
 						const dataUrl = sketchRef.current.toDataURL();
 						log('Submitted image %o', dataUrl);
-						dispatch(
-							actions.setPlayer({ name: location.state.name, src: dataUrl }),
-						);
+						const player: Player = { name: location.state.name, src: dataUrl };
+						dispatch(actions.setState(player));
 						history.goBack();
 					}}
 				>

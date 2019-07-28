@@ -1,18 +1,14 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
-import store from './redux';
-import { loadPlayer } from './player';
+import store, { run } from './redux';
 
 const WelcomeScreen = lazy(() => import('./WelcomeScreen'));
 const DrawFaceScreen = lazy(() => import('./DrawFaceScreen'));
 const NotFound: ScreenFC = () => <p>Not found</p>;
 
 export default function App() {
-	React.useEffect(() => {
-		store.dispatch(loadPlayer());
-	}, []);
-
+	React.useEffect(run, []);
 	return (
 		<ReduxProvider store={store}>
 			<Router>

@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction, AnyAction } from 'redux-starter-kit';
+import { createSlice, PayloadAction } from 'redux-starter-kit';
+import { put, call, takeEvery } from 'redux-saga/effects';
 import localforage from 'localforage';
 import debug from 'debug';
-import { ThunkDispatch } from 'redux-thunk';
 
 const log = debug('crazytown:redux');
 
@@ -16,47 +16,42 @@ const playerSlice = createSlice({
 	slice: 'player',
 	initialState: null as PlayerState,
 	reducers: {
-		setLoading(_, _2) {
-			return 'loading';
-		},
-		setNoPlayer(_, _2) {
-			return null;
-		},
-		setPlayer(_, action: PayloadAction<Player>) {
-			return action.payload;
+		setState(state: PlayerState, { payload }: PayloadAction<PlayerState>) {
+			return payload;
 		},
 	},
 });
 
-type Dispatch = ThunkDispatch<PlayerState, null, AnyAction>;
+const { reducer, actions, selectors } = playerSlice;
 
-const setPlayer = (player: Player) => (dispatch: Dispatch) => {
-	dispatch(playerSlice.actions.setPlayer(player));
-	localforage.setItem('player', player).catch(e => {
-		log('Failed to save player');
+const saga = function* playerSaga() {
+	try {
+		put(actions.setState('loading'));
+		const player = yield call(localforage.getItem, 'player');
+		if (player) {
+			log('loaded player', player);
+			yield put(actions.setState(player));
+		} else {
+			log('no player saved');
+			yield put(actions.setState(null));
+		}
+	} catch (e) {
+		log('failure loading player');
 		log(e);
+		yield put(actions.setState(null));
+	}
+
+	yield takeEvery(actions.setState(null).type, function* savePlayer({
+		payload,
+	}: PayloadAction<PlayerState>) {
+		if (payload === null || payload === 'loading') return;
+		try {
+			yield call([localforage, localforage.setItem], 'player', payload);
+		} catch (e) {
+			log('Failed to save player');
+			log(e);
+		}
 	});
 };
 
-const loadPlayer = () => (dispatch: Dispatch) => {
-	dispatch(playerSlice.actions.setLoading());
-	localforage
-		.getItem<Player>('player')
-		.then(player => {
-			if (player) {
-				log('Loaded player %s', player.name);
-				dispatch(playerSlice.actions.setPlayer(player));
-			} else {
-				dispatch(playerSlice.actions.setNoPlayer());
-			}
-		})
-		.catch(err => {
-			log(err);
-			dispatch(playerSlice.actions.setNoPlayer());
-		});
-};
-
-const { reducer, selectors } = playerSlice;
-const actions = { setPlayer, loadPlayer };
-
-export { reducer, actions, selectors };
+export { reducer, actions, selectors, saga };

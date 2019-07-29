@@ -1,7 +1,11 @@
-const Client = require('socket.io-client');
-const { promisify } = require('util');
-const log = require('debug')('crazytown:test');
-const Server = require('.');
+import Client from 'socket.io-client';
+import { promisify } from 'util';
+import { Server } from 'http';
+import debug from 'debug';
+import SocketGameServer from './SocketGameServer';
+import { AddressInfo } from 'net';
+
+const log = debug('crazytown:test');
 
 const socketConfig = {
 	autoConnect: false,
@@ -10,39 +14,49 @@ const socketConfig = {
 	reconnection: false,
 };
 
-class TestServer extends Server {
-	constructor(...args) {
-		super(...args);
-		this.listen = promisify(this.listen);
-		this.close = promisify(this.close);
-		this.on('listening', () => {
-			const { address, port } = this.address();
+class TestServer {
+	nodeServer: Server = new SocketGameServer();
+	listen = promisify(this.nodeServer.listen).bind(this.nodeServer);
+	close = promisify(this.nodeServer.close).bind(this.nodeServer);
+	url = '';
+	constructor() {
+		this.nodeServer.on('listening', () => {
+			const { address, port } = this.nodeServer.address() as AddressInfo;
 			this.url = `http://[${address}]:${port}`;
 			log('listening on %s', this.url);
 		});
 	}
 }
 
-class TestClient extends Client {
+class TestClient {
+	socket: typeof Client;
 	constructor(url) {
-		super(url, socketConfig);
-		this.openCb = this.open;
-		this.closeCb = this.close;
-		this.open = () =>
-			new Promise((res, rej) => {
-				this.once('connect', res);
-				this.once('connect_error', rej);
-				this.openCb();
-			});
-		this.close = () =>
-			new Promise(res => {
-				this.once('disconnect', res);
-				this.closeCb();
-			});
-		this.next = (eventName = 'message') =>
-			new Promise(resolve => {
-				this.once(eventName, resolve);
-			});
+		this.socket = new Client(url, socketConfig);
+	}
+
+	open() {
+		return new Promise((res, rej) => {
+			this.socket.once('connect', res);
+			this.socket.once('connect_error', rej);
+			this.socket.open();
+		});
+	}
+
+	close() {
+		new Promise(res => {
+			this.socket.once('disconnect', res);
+			this.socket.close();
+		});
+	}
+
+	emit(...args) {
+		this.socket.emit(...args);
+	}
+
+	next(eventName = 'message') {
+		return new Promise(resolve => {
+			this.socket.once(eventName, resolve);
+		});
 	}
 }
 
@@ -92,12 +106,12 @@ describe('/games', () => {
 		]);
 
 		const p2Games1 = client2.next();
-		client2.connect();
+		client2.open();
 		await expect(p2Games1).resolves.toHaveLength(1);
 
 		const p2Games2 = client2.next();
 		const p1Games3 = client1.next();
-		client2.send('create', { hostPlayer: { name: 'Bob' } });
+		client2.emit('create', { hostPlayer: { name: 'Bob' } });
 
 		expect(p2Games2).resolves.toHaveLength(2);
 		expect(p1Games3).resolves.toHaveLength(2);

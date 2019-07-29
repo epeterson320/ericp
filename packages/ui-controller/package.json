@@ -14,7 +14,6 @@
 		"@types/react-router-dom": "^4.3.4",
 		"@types/reactstrap": "^8.0.1",
 		"bootstrap": "^4.3.1",
-		"eslint": "^5.16.0",
 		"jquery": "^3.4.1",
 		"localforage": "^1.7.3",
 		"lodash": "^4.17.15",
@@ -36,11 +35,7 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"test": "react-scripts test",
-		"lint": "eslint src"
-	},
-	"eslintConfig": {
-		"extends": "react-app"
+		"test": "react-scripts test"
 	},
 	"browserslist": {
 		"production": [

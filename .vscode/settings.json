@@ -1,5 +1,3 @@
 {
-	"editor.formatOnSave": true,
-	"jest.pathToJest": "yarn workspace ui-controller run react-scripts test",
-	"jest.autoEnable": true
+	"editor.formatOnSave": true
 }

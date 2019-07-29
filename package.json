@@ -5,9 +5,15 @@
 	"author": "Eric Peterson",
 	"private": true,
 	"devDependencies": {
+		"@babel/core": "^7.5.5",
+		"@babel/preset-env": "^7.5.5",
+		"@babel/preset-react": "^7.0.0",
+		"@babel/preset-typescript": "^7.3.3",
 		"@typescript-eslint/eslint-plugin": "^1.13.0",
 		"@typescript-eslint/parser": "^1.13.0",
 		"babel-eslint": "^10.0.2",
+		"babel-jest": "^24.8.0",
+		"babel-preset-react-app": "^9.0.0",
 		"eslint": "5.x",
 		"eslint-config-react-app": "^4.0.1",
 		"eslint-plugin-flowtype": "2.x",
@@ -23,7 +29,7 @@
 		"clean": "lerna clean",
 		"start": "lerna run --scope ui-* --scope host-socketio --parallel start",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx packages/*/src",
-		"test": "CI=true lerna run --stream test"
+		"test": "jest"
 	},
 	"workspaces": [
 		"packages/*"
@@ -45,6 +51,45 @@
 		"packages/*/src/**/*.{js,jsx,ts,tsx}": [
 			"prettier --write",
 			"git add"
+		]
+	},
+	"jest": {
+		"collectCoverageFrom": [
+			"packages/*/src/**/*.{js,jsx,ts,tsx}",
+			"!packages/*/src/**/*.d.ts"
+		],
+		"setupFiles": [
+			"react-app-polyfill/jsdom"
+		],
+		"setupFilesAfterEnv": [],
+		"testMatch": [
+			"<rootDir>/packages/*/src/**/*.test.{js,jsx,ts,tsx}"
+		],
+		"testEnvironment": "jest-environment-jsdom-fourteen",
+		"transform": {
+			"^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
+			"^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+			"^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+		},
+		"transformIgnorePatterns": [
+			"[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
+			"^.+\\.module\\.(css|sass|scss)$"
+		],
+		"modulePaths": [],
+		"moduleNameMapper": {
+			"^react-native$": "react-native-web",
+			"^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+		},
+		"moduleFileExtensions": [
+			"js",
+			"ts",
+			"tsx",
+			"json",
+			"jsx"
+		],
+		"watchPlugins": [
+			"jest-watch-typeahead/filename",
+			"jest-watch-typeahead/testname"
 		]
 	}
 }

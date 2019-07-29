@@ -1,1 +1,2 @@
-const Game = require("core");
+require('@crazytown/game-core');
+require('@crazytown/ui-display');

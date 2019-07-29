@@ -29,7 +29,7 @@
 	},
 	"scripts": {
 		"clean": "lerna clean",
-		"start": "lerna run --scope ui-* --scope host-socketio --parallel start",
+		"start": "lerna run --scope @crazytown/ui-* --scope @crazytown/host-socketio --parallel start",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx packages/*/src",
 		"test": "jest"
 	},

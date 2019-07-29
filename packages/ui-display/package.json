@@ -1,5 +1,5 @@
 {
-	"name": "ui-display",
+	"name": "@crazytown/ui-display",
 	"version": "1.0.0",
 	"description": "Crazytown public display client",
 	"private": true,

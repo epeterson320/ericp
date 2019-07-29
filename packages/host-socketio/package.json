@@ -1,20 +1,16 @@
 {
-	"name": "host-socketio",
+	"name": "@crazytown/host-socketio",
 	"version": "1.0.0",
 	"main": "src/index.js",
 	"private": true,
 	"dependencies": {
+		"@crazytown/game-core": "^1.0.0",
 		"debug": "^4.1.1",
 		"express": "^4.17.1",
-		"game-core": "^1.0.0",
 		"socket.io": "^2.2.0",
 		"uuid": "^3.3.2"
 	},
 	"scripts": {
-		"start": "node server.js",
-		"test": "react-scripts test"
-	},
-	"devDependencies": {
-		"react-scripts": "^3.0.1"
+		"start": "node server.js"
 	}
 }

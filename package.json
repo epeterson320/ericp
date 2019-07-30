@@ -89,6 +89,9 @@
 			"json",
 			"jsx"
 		],
+		"projects": [
+			"<rootDir>/projects/*"
+		],
 		"watchPlugins": [
 			"jest-watch-typeahead/filename",
 			"jest-watch-typeahead/testname"

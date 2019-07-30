@@ -1,6 +1,5 @@
 import Client from 'socket.io-client';
 import { promisify } from 'util';
-import { Server } from 'http';
 import debug from 'debug';
 import SocketGameServer from './SocketGameServer';
 import { AddressInfo } from 'net';
@@ -14,89 +13,85 @@ const socketConfig = {
 	reconnection: false,
 };
 
-class TestServer {
-	nodeServer: Server = new SocketGameServer();
-	listen = promisify(this.nodeServer.listen).bind(this.nodeServer);
-	close = promisify(this.nodeServer.close).bind(this.nodeServer);
+class TestServer extends SocketGameServer {
+	listenP = promisify(this.listen) as () => Promise<undefined>;
+	closeP = promisify(this.close) as () => Promise<undefined>;
 	url = '';
-	constructor() {
-		this.nodeServer.on('listening', () => {
-			const { address, port } = this.nodeServer.address() as AddressInfo;
+	constructor(...args: any[]) {
+		super(...args);
+		this.on('listening', () => {
+			const { address, port } = this.address() as AddressInfo;
 			this.url = `http://[${address}]:${port}`;
 			log('listening on %s', this.url);
 		});
 	}
 }
 
-class TestClient {
-	socket: typeof Client;
-	constructor(url) {
-		this.socket = new Client(url, socketConfig);
-	}
-
-	open() {
-		return new Promise((res, rej) => {
-			this.socket.once('connect', res);
-			this.socket.once('connect_error', rej);
-			this.socket.open();
-		});
-	}
-
-	close() {
-		new Promise(res => {
-			this.socket.once('disconnect', res);
-			this.socket.close();
-		});
-	}
-
-	emit(...args) {
-		this.socket.emit(...args);
-	}
-
-	next(eventName = 'message') {
-		return new Promise(resolve => {
-			this.socket.once(eventName, resolve);
-		});
-	}
+interface TestClient extends SocketIOClient.Socket {
+	openP: () => Promise<undefined>;
+	closeP: () => Promise<undefined>;
+	next: (eventName?: string) => Promise<any>;
 }
 
-let server, client1, client2;
+function TestClient(url: string): TestClient {
+	const socket: TestClient = Client(url, socketConfig) as TestClient;
+
+	socket.openP = () =>
+		new Promise((res, rej) => {
+			socket.once('connect', res);
+			socket.once('connect_error', rej);
+			socket.open();
+		});
+	socket.closeP = () =>
+		new Promise(res => {
+			socket.once('disconnect', res);
+			socket.close();
+		});
+	socket.next = (eventName = 'message') =>
+		new Promise(resolve => {
+			socket.once(eventName, resolve);
+		});
+	return socket;
+}
+
+let server: TestServer;
+let client1: TestClient;
+let client2: TestClient;
 
 beforeEach(() => {
 	server = new TestServer();
 });
 
 afterEach(async () => {
-	if (server.listening) await server.close();
+	if (server.listening) await server.closeP();
 	if (client1 && client1.connected) await client1.close();
 	if (client2 && client2.connected) await client2.close();
-	server = client1 = client2 = null;
 });
 
 describe('server', () => {
 	test('starts and stops', async () => {
-		await server.listen();
-		await server.close();
+		await server.listenP();
+		await server.closeP();
 	});
 
 	test('accepts connections', async () => {
-		await server.listen();
-		client1 = new TestClient(server.url);
-		await client1.open();
-		await client1.close();
-		await server.close();
+		await server.listenP();
+		client1 = TestClient(server.url);
+		await client1.openP();
+		await client1.closeP();
+		await server.closeP();
 	});
 });
 
 describe('/games', () => {
 	test('publishes games at websocket, creates via POST', async () => {
-		await server.listen();
+		await server.listenP();
 
-		client1 = new TestClient(server.url + '/games');
-		client2 = new TestClient(server.url + '/games');
+		client1 = TestClient(server.url + '/games');
+		client2 = TestClient(server.url + '/games');
 
 		const p1Games1 = client1.next();
-		client1.open();
+		client1.openP();
 		await expect(p1Games1).resolves.toEqual([]);
 
 		const p1Games2 = client1.next();
@@ -115,8 +110,8 @@ describe('/games', () => {
 
 		expect(p2Games2).resolves.toHaveLength(2);
 		expect(p1Games3).resolves.toHaveLength(2);
-		await client1.close();
-		await client2.close();
-		await server.close();
+		await client1.closeP();
+		await client2.closeP();
+		await server.closeP();
 	});
 });

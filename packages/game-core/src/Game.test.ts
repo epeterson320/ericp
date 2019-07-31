@@ -20,7 +20,7 @@ describe('Game', () => {
 		game.onMessage(listener);
 		game.dispatch(bogusMessage as AppAction);
 
-		await wait(50);
+		await wait(10);
 		expect(listener).not.toHaveBeenCalled();
 	});
 
@@ -32,6 +32,7 @@ describe('Game', () => {
 			expect(gameMessage).toMatchObject<Message>({
 				type: 'PLAYER_JOINED',
 				payload: {
+					id: 'jr',
 					name: 'Joey',
 				},
 			});
@@ -39,9 +40,7 @@ describe('Game', () => {
 
 		game.dispatch({
 			type: 'PLAYER_REQ_JOIN',
-			payload: {
-				name: 'Joey',
-			},
+			payload: { id: 'jr', name: 'Joey' },
 		});
 	});
 });

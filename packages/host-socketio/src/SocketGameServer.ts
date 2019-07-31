@@ -2,12 +2,12 @@ import { Server } from 'http';
 import makeSocketServer from 'socket.io';
 import uuid from 'uuid/v1';
 import debug from 'debug';
-import Game from '@crazytown/game-core';
+import Game from '../../game-core/src/Game';
 
 const log = debug('crazytown:host-socketio');
 
 export default class SocketGameServer extends Server {
-	games = new Map<string, Game>();
+	games = new Map<string, any>();
 	io: SocketIO.Server;
 	gamesIO: SocketIO.Namespace;
 

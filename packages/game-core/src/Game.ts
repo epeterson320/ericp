@@ -40,8 +40,11 @@ export default class Game {
 	constructor() {
 		const sagaMW = createSagaMiddleware();
 		this.store = createStore(rootReducer, applyMiddleware(sagaMW));
-		const sendMessage = msg => this.listeners.forEach(cb => cb(msg));
-		sagaMW.run(rootSaga, sendMessage);
+		sagaMW.run(rootSaga, this.sendMessage.bind(this));
+	}
+
+	protected sendMessage(msg: GameMessage) {
+		this.listeners.forEach(cb => cb(msg));
 	}
 
 	onMessage(listener: MessageListener): Disposable {

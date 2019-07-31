@@ -1,5 +1,5 @@
-import { actions, reducer, saga, PlayerAction } from './player';
-import { runSaga, channel } from 'redux-saga';
+import { actions, reducer, saga } from './player';
+import { runSaga, channel, Saga } from 'redux-saga';
 import { fork, put, cancel, call } from 'redux-saga/effects';
 
 const player1 = { id: 'tr', name: 'Tommy' };
@@ -34,7 +34,7 @@ describe('saga', () => {
 	});
 });
 
-function runTestSaga(testSaga, prodSaga, ...args) {
+function runTestSaga(testSaga: Saga, prodSaga: Saga, ...args: any[]) {
 	const testChannel = channel();
 	const testSagaOpts = {
 		channel: testChannel,

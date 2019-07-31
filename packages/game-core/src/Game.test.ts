@@ -1,4 +1,4 @@
-import Game, { Message, AppAction } from './Game';
+import Game, { GameMessage, GameAction } from './Game';
 
 function wait(ms) {
 	return new Promise(resolve => {
@@ -18,7 +18,7 @@ describe('Game', () => {
 			},
 		};
 		game.onMessage(listener);
-		game.dispatch(bogusMessage as AppAction);
+		game.dispatch(bogusMessage as GameAction);
 
 		await wait(10);
 		expect(listener).not.toHaveBeenCalled();
@@ -29,7 +29,7 @@ describe('Game', () => {
 		const game = new Game();
 
 		game.onMessage(gameMessage => {
-			expect(gameMessage).toMatchObject<Message>({
+			expect(gameMessage).toMatchObject<GameMessage>({
 				type: 'PLAYER_JOINED',
 				payload: {
 					id: 'jr',

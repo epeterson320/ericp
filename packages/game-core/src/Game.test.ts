@@ -1,46 +1,30 @@
-import Game, { GameMessage, GameAction } from './Game';
-
-function wait(ms) {
-	return new Promise(resolve => {
-		setTimeout(resolve, ms);
-	});
-}
+import Game from './Game';
+import { actions } from './player';
 
 describe('Game', () => {
-	it('Ignores unknown messages', async () => {
-		const game = new Game();
-
-		const listener = jest.fn();
-		const bogusMessage: unknown = {
-			type: 'uas;dlkasn;l',
-			payload: {
-				a1pak: 'as;lk',
-			},
-		};
-		game.onMessage(listener);
-		game.dispatch(bogusMessage as GameAction);
-
-		await wait(10);
-		expect(listener).not.toHaveBeenCalled();
-	});
+	const player1 = { id: 'jr', name: 'Joey' };
+	const player2 = { id: 'tr', name: 'Tommy' };
 
 	it('Responds when a player joins', () => {
-		expect.assertions(1);
 		const game = new Game();
 
-		game.onMessage(gameMessage => {
-			expect(gameMessage).toMatchObject<GameMessage>({
-				type: 'PLAYER_JOINED',
-				payload: {
-					id: 'jr',
-					name: 'Joey',
-				},
-			});
-		});
+		const cb = jest.fn();
+		game.onMessage(cb);
+		game.dispatch(actions.playerReqJoin(player1));
 
-		game.dispatch({
-			type: 'PLAYER_REQ_JOIN',
-			payload: { id: 'jr', name: 'Joey' },
+		expect(cb).toHaveBeenCalledWith({
+			type: 'PLAYER_JOINED',
+			payload: player1,
 		});
+	});
+
+	it('stops sending messages when a listener unsubscribes', () => {
+		const game = new Game();
+		const cb = jest.fn();
+		const unsub = game.onMessage(cb);
+		game.dispatch(actions.playerReqJoin(player1));
+		unsub();
+		game.dispatch(actions.playerReqJoin(player2));
+		expect(cb).toHaveBeenCalledTimes(1);
 	});
 });

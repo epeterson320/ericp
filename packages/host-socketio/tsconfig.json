@@ -1,7 +1,9 @@
 {
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"target": "esnext",
-		"esModuleInterop": true,
-		"strict": true
-	}
+		"outDir": "lib",
+		"rootDir": "src"
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules", "src/**/*.test.ts"]
 }

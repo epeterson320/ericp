@@ -2,7 +2,7 @@ import { Server } from 'http';
 import makeSocketServer from 'socket.io';
 import uuid from 'uuid/v1';
 import debug from 'debug';
-import Game from '../../game-core/src/Game';
+import Game from '@crazytown/game-core';
 
 const log = debug('crazytown:host-socketio');
 

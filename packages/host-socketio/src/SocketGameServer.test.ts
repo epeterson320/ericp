@@ -109,36 +109,3 @@ describe('/game', () => {
 		await server.closeP();
 	});
 });
-
-describe('/games', () => {
-	test('publishes games at websocket, creates via POST', async () => {
-		const url = await server.listenP();
-
-		client1 = TestClient(url + '/games');
-		client2 = TestClient(url + '/games');
-
-		const p1Games1 = client1.next();
-		client1.openP();
-		await expect(p1Games1).resolves.toEqual([]);
-
-		const p1Games2 = client1.next();
-		client1.emit('create', { hostPlayer: { name: 'Alice' } });
-		await expect(p1Games2).resolves.toEqual([
-			{ id: expect.any(String), hostPlayer: { name: 'Alice' } },
-		]);
-
-		const p2Games1 = client2.next();
-		client2.open();
-		await expect(p2Games1).resolves.toHaveLength(1);
-
-		const p2Games2 = client2.next();
-		const p1Games3 = client1.next();
-		client2.emit('create', { hostPlayer: { name: 'Bob' } });
-
-		expect(p2Games2).resolves.toHaveLength(2);
-		expect(p1Games3).resolves.toHaveLength(2);
-		await client1.closeP();
-		await client2.closeP();
-		await server.closeP();
-	});
-});

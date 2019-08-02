@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import debug from 'debug';
 import SocketGameServer from './SocketGameServer';
 import { AddressInfo } from 'net';
+import { actions } from '@crazytown/game-core/src/player';
 
 const log = debug('crazytown:test');
 
@@ -78,6 +79,34 @@ describe('server', () => {
 		await server.listenP();
 		client1 = TestClient(server.url);
 		await client1.openP();
+		await client1.closeP();
+		await server.closeP();
+	});
+});
+
+describe('/game', () => {
+	test('accepts connections', async () => {
+		await server.listenP();
+		client1 = TestClient(server.url + '/game');
+		await client1.openP();
+		await client1.closeP();
+		await server.closeP();
+	});
+
+	test('accepts actions and sends messages', async () => {
+		await server.listenP();
+		client1 = TestClient(server.url + '/game');
+		const p1Games1 = client1.next();
+		await client1.openP();
+
+		const player = { id: 'hey', name: 'Foo' };
+		client1.emit('action', actions.playerReqJoin(player));
+		const expectedMsg = {
+			type: 'PLAYER_JOINED',
+			payload: player,
+		};
+
+		await expect(p1Games1).resolves.toEqual(expectedMsg);
 		await client1.closeP();
 		await server.closeP();
 	});

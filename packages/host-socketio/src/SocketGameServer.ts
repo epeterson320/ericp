@@ -10,6 +10,8 @@ export default class SocketGameServer extends Server {
 	games = new Map<string, any>();
 	io: SocketIO.Server;
 	gamesIO: SocketIO.Namespace;
+	gameIO: SocketIO.Namespace;
+	game = new Game();
 
 	constructor(...args: any[]) {
 		super(...args);
@@ -19,6 +21,15 @@ export default class SocketGameServer extends Server {
 
 		this.io = makeSocketServer(this);
 		this.io.on('connection', this.onConnected);
+
+		this.gameIO = this.io.of('/game');
+		this.gameIO.on('connection', socket => {
+			socket.on('action', action => this.game.dispatch(action));
+		});
+		this.game.onMessage(msg => {
+			this.gameIO.emit('message', msg);
+		});
+
 		this.gamesIO = this.io.of('/games');
 		this.gamesIO.on('connection', this.onGamesIOConnection);
 	}

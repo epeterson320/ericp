@@ -1,58 +1,56 @@
 import Client from 'socket.io-client';
 import { promisify } from 'util';
-import debug from 'debug';
 import SocketGameServer from './SocketGameServer';
-import { AddressInfo } from 'net';
 import { actions } from '@crazytown/game-core/src/player';
 
-const log = debug('crazytown:test');
-
-const socketConfig = {
-	autoConnect: false,
-	transports: ['websocket'],
-	forceNew: true,
-	reconnection: false,
-};
-
 class TestServer extends SocketGameServer {
-	listenP = promisify(this.listen) as () => Promise<undefined>;
-	closeP = promisify(this.close) as () => Promise<undefined>;
-	url = '';
-	constructor(...args: any[]) {
-		super(...args);
-		this.on('listening', () => {
-			const { address, port } = this.address() as AddressInfo;
-			this.url = `http://[${address}]:${port}`;
-			log('listening on %s', this.url);
+	closeP: () => Promise<void> = promisify(this.close);
+	listenP(): Promise<string> {
+		return new Promise((res, rej) => {
+			this.once('listening', () => {
+				const address = this.address();
+				if (typeof address === 'string') res(address);
+				else res(`http://[${address.address}]:${address.port}`);
+			});
+			this.once('error', rej);
+			this.listen();
 		});
 	}
 }
 
 interface TestClient extends SocketIOClient.Socket {
-	openP: () => Promise<undefined>;
-	closeP: () => Promise<undefined>;
+	openP: () => Promise<void>;
+	closeP: () => Promise<void>;
 	next: (eventName?: string) => Promise<any>;
 }
 
 function TestClient(url: string): TestClient {
-	const socket: TestClient = Client(url, socketConfig) as TestClient;
-
-	socket.openP = () =>
-		new Promise((res, rej) => {
-			socket.once('connect', res);
-			socket.once('connect_error', rej);
-			socket.open();
-		});
-	socket.closeP = () =>
-		new Promise(res => {
-			socket.once('disconnect', res);
-			socket.close();
-		});
-	socket.next = (eventName = 'message') =>
-		new Promise(resolve => {
-			socket.once(eventName, resolve);
-		});
-	return socket;
+	const socket = Client(url, {
+		autoConnect: false,
+		transports: ['websocket'],
+		forceNew: true,
+		reconnection: false,
+	});
+	return Object.assign(socket, {
+		openP() {
+			return new Promise<void>((res, rej) => {
+				this.once('connect', res);
+				this.once('connect_error', rej);
+				this.open();
+			});
+		},
+		closeP() {
+			return new Promise<void>(res => {
+				this.once('disconnect', res);
+				this.close();
+			});
+		},
+		next(eventName = 'message') {
+			return new Promise(res => {
+				this.once(eventName, res);
+			});
+		},
+	});
 }
 
 let server: TestServer;
@@ -76,8 +74,8 @@ describe('server', () => {
 	});
 
 	test('accepts connections', async () => {
-		await server.listenP();
-		client1 = TestClient(server.url);
+		const url = await server.listenP();
+		client1 = TestClient(url);
 		await client1.openP();
 		await client1.closeP();
 		await server.closeP();
@@ -86,16 +84,16 @@ describe('server', () => {
 
 describe('/game', () => {
 	test('accepts connections', async () => {
-		await server.listenP();
-		client1 = TestClient(server.url + '/game');
+		const url = await server.listenP();
+		client1 = TestClient(url + '/game');
 		await client1.openP();
 		await client1.closeP();
 		await server.closeP();
 	});
 
 	test('accepts actions and sends messages', async () => {
-		await server.listenP();
-		client1 = TestClient(server.url + '/game');
+		const url = await server.listenP();
+		client1 = TestClient(url + '/game');
 		const p1Games1 = client1.next();
 		await client1.openP();
 
@@ -114,10 +112,10 @@ describe('/game', () => {
 
 describe('/games', () => {
 	test('publishes games at websocket, creates via POST', async () => {
-		await server.listenP();
+		const url = await server.listenP();
 
-		client1 = TestClient(server.url + '/games');
-		client2 = TestClient(server.url + '/games');
+		client1 = TestClient(url + '/games');
+		client2 = TestClient(url + '/games');
 
 		const p1Games1 = client1.next();
 		client1.openP();

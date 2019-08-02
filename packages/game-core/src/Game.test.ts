@@ -1,4 +1,4 @@
-import Game from '.';
+import { Game } from '.';
 import { actions } from './player';
 
 describe('Game', () => {

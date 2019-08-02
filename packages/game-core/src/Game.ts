@@ -1,41 +1,30 @@
 import { combineReducers, createStore, Store, applyMiddleware } from 'redux';
 import createSagaMiddleware, { SagaIterator } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
-import {
-	reducer as playerReducer,
-	saga as playerSaga,
-	PlayerState,
-	PlayerMessage,
-	PlayerAction,
-} from './player';
+import * as player from './player';
 
-interface GameState {
-	player: PlayerState;
+export type Action = player.Action; // | slice2.Action | slice3.Action;
+export type Message = player.Message; // | slice2.Message | slice3.Message;
+
+interface State {
+	player: player.State;
 }
 
-export type GameMessage = PlayerMessage;
-
-export interface Disposable {
-	(): void;
-}
-
-export type GameAction = PlayerAction;
-
-const rootReducer = combineReducers<GameState, GameAction>({
-	player: playerReducer,
+const rootReducer = combineReducers<State, Action>({
+	player: player.reducer,
 });
 
 interface MessageListener {
-	(message: GameMessage): void;
+	(message: Message): void;
 }
 
 function* rootSaga(sendMessage: MessageListener): SagaIterator {
-	yield fork(playerSaga, sendMessage);
+	yield fork(player.saga, sendMessage);
 }
 
 export default class Game {
 	protected listeners = new Set<MessageListener>();
-	protected store: Store<GameState, GameAction>;
+	protected store: Store<State, Action>;
 
 	constructor() {
 		const sagaMW = createSagaMiddleware();
@@ -43,16 +32,18 @@ export default class Game {
 		sagaMW.run(rootSaga, this.sendMessage.bind(this));
 	}
 
-	protected sendMessage(msg: GameMessage) {
+	protected sendMessage(msg: Message) {
 		this.listeners.forEach(cb => cb(msg));
 	}
 
-	onMessage(listener: MessageListener): Disposable {
+	onMessage(listener: MessageListener) {
 		this.listeners.add(listener);
-		return () => this.listeners.delete(listener);
+		return () => {
+			this.listeners.delete(listener);
+		};
 	}
 
-	dispatch(action: GameAction): void {
+	dispatch(action: Action): void {
 		this.store.dispatch(action);
 	}
 }

@@ -7,7 +7,7 @@ export interface Player {
 	thumbUrl?: string;
 }
 
-export type PlayerState = Player[];
+export type State = Player[];
 
 const PLAYER_REQ_JOIN = 'PLAYER_REQ_JOIN';
 const PLAYER_LEAVE = 'PLAYER_LEAVE';
@@ -22,16 +22,16 @@ interface PlayerLeaveAction {
 	payload: { id: string };
 }
 
-export type PlayerAction = PlayerReqJoinAction | PlayerLeaveAction;
+export type Action = PlayerReqJoinAction | PlayerLeaveAction;
 
-function playerReqJoin(player: Player): PlayerAction {
+function playerReqJoin(player: Player): Action {
 	return {
 		type: PLAYER_REQ_JOIN,
 		payload: player,
 	};
 }
 
-function playerLeave(id: string): PlayerAction {
+function playerLeave(id: string): Action {
 	return {
 		type: PLAYER_LEAVE,
 		payload: { id },
@@ -39,9 +39,9 @@ function playerLeave(id: string): PlayerAction {
 }
 export const actions = { playerReqJoin, playerLeave };
 
-const playerInitialState: PlayerState = [];
+const playerInitialState: State = [];
 
-export const reducer: Reducer<PlayerState, PlayerAction> = (
+export const reducer: Reducer<State, Action> = (
 	state = playerInitialState,
 	action,
 ) => {
@@ -68,15 +68,15 @@ interface PlayerLeftMessage {
 	payload: { id: string };
 }
 
-export type PlayerMessage = PlayerJoinedMessage | PlayerLeftMessage;
+export type Message = PlayerJoinedMessage | PlayerLeftMessage;
 
-type SendMessage = (msg: PlayerMessage) => void;
+type SendMessage = (msg: Message) => void;
 
 function* sendJoined(
 	sendMessage: SendMessage,
 	action: PlayerReqJoinAction,
 ): SagaIterator {
-	const msg: PlayerMessage = { type: 'PLAYER_JOINED', payload: action.payload };
+	const msg: Message = { type: 'PLAYER_JOINED', payload: action.payload };
 	yield call(sendMessage, msg);
 }
 

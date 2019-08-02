@@ -1,7 +1,7 @@
 import { Server } from 'http';
 import io from 'socket.io';
 import debug from 'debug';
-import Game from '@crazytown/game-core';
+import { Game } from '@crazytown/game-core';
 
 const log = debug('crazytown:host-socketio');
 

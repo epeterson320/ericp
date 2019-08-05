@@ -2,10 +2,12 @@
 // https://gist.github.com/don1138/5761014
 // But don't add until you need them.
 
-// Override variables:
-// actually I don't have any variables to override yet.
-// List here:
+// Variables list here:
 // https://github.com/twbs/bootstrap/blob/master/scss/_variables.scss
+
+// Comic stack: https://stackoverflow.com/a/35511589/2516450
+$font-family-base: 'Comic Sans MS', 'Comic Sans', 'Chalkboard SE', 'Comic Neue',
+	sans-serif;
 
 @import '~bootstrap/scss/bootstrap';
 

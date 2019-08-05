@@ -48,7 +48,7 @@ const DrawFaceScreen: ScreenFC = ({ history, location }) => {
 						const dataUrl = sketchRef.current.toDataURL();
 						log('Submitted image %o', dataUrl);
 						const player: Player = { name: location.state.name, src: dataUrl };
-						dispatch(actions.setState(player));
+						dispatch(actions.setPlayer(player));
 						history.goBack();
 					}}
 				>

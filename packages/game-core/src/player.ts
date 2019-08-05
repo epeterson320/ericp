@@ -1,74 +1,40 @@
-import { Reducer } from 'redux';
+import { createSlice, PayloadAction } from 'redux-starter-kit';
 import { SagaIterator } from 'redux-saga';
 import { takeEvery, call } from 'redux-saga/effects';
-export interface Player {
+interface Player {
 	id: string;
 	name: string;
 	thumbUrl?: string;
 }
 
-export type State = Player[];
+type State = Player[];
+const initialState: State = [];
 
-const PLAYER_REQ_JOIN = 'PLAYER_REQ_JOIN';
-const PLAYER_LEAVE = 'PLAYER_LEAVE';
-
-interface PlayerReqJoinAction {
-	type: typeof PLAYER_REQ_JOIN;
-	payload: Player;
-}
-
-interface PlayerLeaveAction {
-	type: typeof PLAYER_LEAVE;
-	payload: { id: string };
-}
-
-export type Action = PlayerReqJoinAction | PlayerLeaveAction;
-
-function playerReqJoin(player: Player): Action {
-	return {
-		type: PLAYER_REQ_JOIN,
-		payload: player,
-	};
-}
-
-function playerLeave(id: string): Action {
-	return {
-		type: PLAYER_LEAVE,
-		payload: { id },
-	};
-}
-export const actions = { playerReqJoin, playerLeave };
-
-const playerInitialState: State = [];
-
-export const reducer: Reducer<State, Action> = (
-	state = playerInitialState,
-	action,
-) => {
-	switch (action.type) {
-		case PLAYER_REQ_JOIN:
+const slice = createSlice({
+	slice: 'player',
+	initialState,
+	reducers: {
+		playerReqJoin(state, action: PayloadAction<Player>) {
 			return state.concat(action.payload);
-		case PLAYER_LEAVE:
+		},
+		playerLeave(state, action: PayloadAction<{ id: string }>) {
 			return state.filter(({ id }) => id !== action.payload.id);
-		default:
-			return state;
-	}
-};
+		},
+	},
+});
 
-export const PLAYER_JOINED = 'PLAYER_JOINED';
-export const PLAYER_LEFT = 'PLAYER_JOINED';
+const { reducer, selectors, actions } = slice;
 
-interface PlayerJoinedMessage {
-	type: typeof PLAYER_JOINED;
-	payload: Player;
-}
+type PlayerReqJoinAction = ReturnType<typeof actions.playerReqJoin>;
+type PlayerLeaveAction = ReturnType<typeof actions.playerLeave>;
+type Action = PlayerReqJoinAction | PlayerLeaveAction;
 
-interface PlayerLeftMessage {
-	type: typeof PLAYER_LEFT;
-	payload: { id: string };
-}
+const PLAYER_JOINED = 'PLAYER_JOINED';
+const PLAYER_LEFT = 'PLAYER_JOINED';
 
-export type Message = PlayerJoinedMessage | PlayerLeftMessage;
+type PlayerJoinedMessage = PayloadAction<Player, typeof PLAYER_JOINED>;
+type PlayerLeftMessage = PayloadAction<{ id: string }, typeof PLAYER_LEFT>;
+type Message = PlayerJoinedMessage | PlayerLeftMessage;
 
 type SendMessage = (msg: Message) => void;
 
@@ -80,6 +46,8 @@ function* sendJoined(
 	yield call(sendMessage, msg);
 }
 
-export function* saga(sendMessage: SendMessage): SagaIterator {
-	yield takeEvery('PLAYER_REQ_JOIN', sendJoined, sendMessage);
+function* saga(sendMessage: SendMessage): SagaIterator {
+	yield takeEvery(actions.playerReqJoin, sendJoined, sendMessage);
 }
+
+export { reducer, actions, selectors, saga, State, Action, Message, Player };

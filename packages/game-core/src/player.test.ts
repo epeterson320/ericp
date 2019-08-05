@@ -3,6 +3,7 @@ import { runSaga, channel, Saga } from 'redux-saga';
 import { fork, put, cancel, call } from 'redux-saga/effects';
 
 const player1 = { id: 'tr', name: 'Tommy' };
+
 describe('reducer', () => {
 	it('adds players', () => {
 		const state = reducer(undefined, actions.playerReqJoin(player1));
@@ -12,7 +13,7 @@ describe('reducer', () => {
 	it('removes players', () => {
 		const state1 = reducer(undefined, actions.playerReqJoin(player1));
 		expect(state1).toEqual([player1]);
-		const state2 = reducer(state1, actions.playerLeave(player1.id));
+		const state2 = reducer(state1, actions.playerLeave({ id: player1.id }));
 		expect(state2).toEqual([]);
 	});
 });

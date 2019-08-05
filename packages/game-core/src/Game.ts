@@ -1,4 +1,4 @@
-import { combineReducers, createStore, Store, applyMiddleware } from 'redux';
+import { configureStore, Store } from 'redux-starter-kit';
 import createSagaMiddleware, { SagaIterator } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
 import * as player from './player';
@@ -6,13 +6,9 @@ import * as player from './player';
 export type Action = player.Action; // | slice2.Action | slice3.Action;
 export type Message = player.Message; // | slice2.Message | slice3.Message;
 
-interface State {
+export interface State {
 	player: player.State;
 }
-
-const rootReducer = combineReducers<State, Action>({
-	player: player.reducer,
-});
 
 interface MessageListener {
 	(message: Message): void;
@@ -28,7 +24,10 @@ export default class Game {
 
 	constructor() {
 		const sagaMW = createSagaMiddleware();
-		this.store = createStore(rootReducer, applyMiddleware(sagaMW));
+		this.store = configureStore({
+			reducer: { player: player.reducer },
+			middleware: [sagaMW],
+		});
 		sagaMW.run(rootSaga, this.sendMessage.bind(this));
 	}
 

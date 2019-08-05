@@ -1,7 +1,8 @@
-import { createSlice, getType, PayloadAction } from 'redux-starter-kit';
+import { createSlice, PayloadAction } from 'redux-starter-kit';
 import { put, call, takeEvery } from 'redux-saga/effects';
 import localforage from 'localforage';
 import debug from 'debug';
+import { SagaIterator } from 'redux-saga';
 
 const log = debug('crazytown:redux');
 
@@ -30,14 +31,9 @@ const playerSlice = createSlice({
 
 const { reducer, actions, selectors } = playerSlice;
 
-const saga = function* playerSaga() {
-	yield call(loadPlayerSaga);
-	yield takeEvery(actions.setPlayer, savePlayerSaga);
-};
-
-function* loadPlayerSaga() {
+function* loadPlayer(): SagaIterator {
 	try {
-		put(actions.setLoading());
+		yield put(actions.setLoading());
 		const player = yield call(localforage.getItem, 'player');
 		if (player) {
 			log('loaded player', player);
@@ -53,13 +49,18 @@ function* loadPlayerSaga() {
 	}
 }
 
-function* savePlayerSaga({ payload }: PayloadAction<Player>) {
+function* savePlayer(action: PayloadAction<Player>): SagaIterator {
 	try {
-		yield call([localforage, localforage.setItem], 'player', payload);
+		yield call([localforage, localforage.setItem], 'player', action.payload);
 	} catch (e) {
 		log('Failed to save player');
 		log(e);
 	}
+}
+
+function* saga() {
+	yield call(loadPlayer);
+	yield takeEvery(actions.setPlayer, savePlayer);
 }
 
 export { reducer, actions, selectors, saga };

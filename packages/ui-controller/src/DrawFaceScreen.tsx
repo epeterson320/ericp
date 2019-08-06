@@ -6,10 +6,11 @@ import constant from 'lodash/constant';
 import noop from 'lodash/noop';
 import { useDispatch } from 'react-redux';
 import { actions, Player } from './player';
+import { RouteComponentProps as Props } from 'react-router';
 
 const log = debug('crazytown:DrawFaceScreen');
 
-const DrawFaceScreen: ScreenFC = ({ history, location }) => {
+export default function DrawFaceScreen({ history, location }: Props) {
 	const sketchRef = React.useRef({
 		canUndo: constant(false),
 		undo: noop,
@@ -47,8 +48,9 @@ const DrawFaceScreen: ScreenFC = ({ history, location }) => {
 						//const svg = sketchRef.current.toJSON();
 						const dataUrl = sketchRef.current.toDataURL();
 						log('Submitted image %o', dataUrl);
-						const player: Player = { name: location.state.name, src: dataUrl };
-						dispatch(actions.setPlayer(player));
+						dispatch(
+							actions.setPlayer({ name: location.state.name, src: dataUrl }),
+						);
 						history.goBack();
 					}}
 				>
@@ -57,6 +59,4 @@ const DrawFaceScreen: ScreenFC = ({ history, location }) => {
 			</div>
 		</div>
 	);
-};
-
-export default DrawFaceScreen;
+}

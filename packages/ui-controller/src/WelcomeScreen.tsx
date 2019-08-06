@@ -1,28 +1,43 @@
 import React from 'react';
 import debug from 'debug';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Spinner, Button, Input, FormGroup } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectors, Player } from './player';
+import * as connection from './connection';
+import * as game from '@crazytown/game-core/src/player';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
-const WelcomeScreen: ScreenFC = () => {
+export default function WelcomeScreen({ history }: RouteComponentProps) {
 	const player = useSelector(selectors.getPlayer);
+	const { status } = useSelector(connection.selectors.getConnection);
+	React.useEffect(() => {
+		if (status === 'connected') {
+			history.push('/play');
+		}
+	}, [status]);
 
 	return (
 		<div className="d-flex flex-column align-items-center">
 			<h1>Welcome to Crazytown</h1>
 			{player !== null ? (
-				<StartGameControl player={player} />
+				<StartGameControl player={player} status={status} />
 			) : (
 				<PlayerNameInput />
 			)}
 		</div>
 	);
-};
+}
 
-function StartGameControl({ player }: { player: Player | 'loading' }) {
+function StartGameControl({
+	player,
+	status,
+}: {
+	player: Player | 'loading';
+	status: connection.Status;
+}) {
+	const dispatch = useDispatch();
 	return (
 		<>
 			<div className="mb-3">
@@ -43,10 +58,11 @@ function StartGameControl({ player }: { player: Player | 'loading' }) {
 				{player === 'loading' ? '' : player.name}
 			</div>
 			<Button
-				disabled={player === 'loading'}
+				disabled={player === 'loading' || status === 'connecting'}
 				onClick={() => {
+					if (player === 'loading') return;
 					log('Joined game');
-					// TODO connect to game.
+					dispatch(game.actions.playerReqJoin({ id: '4', ...player }));
 				}}
 			>
 				Start
@@ -84,5 +100,3 @@ const PlayerNameInput = () => {
 		</FormGroup>
 	);
 };
-
-export default WelcomeScreen;

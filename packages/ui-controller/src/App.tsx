@@ -5,7 +5,8 @@ import store, { run } from './redux';
 
 const WelcomeScreen = lazy(() => import('./WelcomeScreen'));
 const DrawFaceScreen = lazy(() => import('./DrawFaceScreen'));
-const NotFound: ScreenFC = () => <p>Not found</p>;
+const GameScreen = lazy(() => import('./GameScreen'));
+const NotFound = () => <p>Not found</p>;
 
 export default function App() {
 	React.useEffect(run, []);
@@ -16,7 +17,7 @@ export default function App() {
 					<Switch>
 						<Route path="/" exact component={WelcomeScreen} />
 						<Route path="/draw" component={DrawFaceScreen} />
-						{/* <Route path="/play" component={GameScreen} /> */}
+						<Route path="/play" component={GameScreen} />
 						<Route component={NotFound} />
 					</Switch>
 				</Suspense>

@@ -7,5 +7,3 @@ declare module 'react-sketch' {
 	}
 	export const SketchField: React.ElementType<any>;
 }
-
-declare type ScreenFC = React.FC<RouteComponentProps>;

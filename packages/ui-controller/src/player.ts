@@ -29,23 +29,28 @@ const playerSlice = createSlice({
 	},
 });
 
-const { reducer, actions, selectors } = playerSlice;
+const {
+	reducer,
+	actions: { setPlayer, setLoading, setNoPlayer },
+	selectors,
+} = playerSlice;
+const actions = { setPlayer };
 
 function* loadPlayer(): SagaIterator {
 	try {
-		yield put(actions.setLoading());
+		yield put(setLoading());
 		const player = yield call(localforage.getItem, 'player');
 		if (player) {
 			log('loaded player', player);
-			yield put(actions.setPlayer(player));
+			yield put(setPlayer(player));
 		} else {
 			log('no player saved');
-			yield put(actions.setNoPlayer());
+			yield put(setNoPlayer());
 		}
 	} catch (e) {
 		log('failure loading player');
 		log(e);
-		yield put(actions.setNoPlayer());
+		yield put(setNoPlayer());
 	}
 }
 

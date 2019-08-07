@@ -3,26 +3,26 @@ import debug from 'debug';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Spinner, Button, Input, FormGroup } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectors, Player } from './player';
+import { selectors, Profile } from './profile';
 import * as connection from './connection';
-import * as game from '@crazytown/game-core/src/player';
+import { player } from '@crazytown/game-core';
 
 const log = debug('crazytown:ui-controller:JoinGameScreen');
 
 export default function WelcomeScreen({ history }: RouteComponentProps) {
-	const player = useSelector(selectors.getPlayer);
+	const profile = useSelector(selectors.getProfile);
 	const { status } = useSelector(connection.selectors.getConnection);
 	React.useEffect(() => {
 		if (status === 'connected') {
 			history.push('/play');
 		}
-	}, [status]);
+	}, [status, history]);
 
 	return (
 		<div className="d-flex flex-column align-items-center">
 			<h1>Welcome to Crazytown</h1>
-			{player !== null ? (
-				<StartGameControl player={player} status={status} />
+			{profile !== null ? (
+				<StartGameControl profile={profile} status={status} />
 			) : (
 				<PlayerNameInput />
 			)}
@@ -31,10 +31,10 @@ export default function WelcomeScreen({ history }: RouteComponentProps) {
 }
 
 function StartGameControl({
-	player,
+	profile,
 	status,
 }: {
-	player: Player | 'loading';
+	profile: Profile | 'loading';
 	status: connection.Status;
 }) {
 	const dispatch = useDispatch();
@@ -45,24 +45,24 @@ function StartGameControl({
 					className="d-flex border justify-content-center align-items-center"
 					style={{ height: 120, width: 120 }}
 				>
-					{player === 'loading' ? (
+					{profile === 'loading' ? (
 						<Spinner />
 					) : (
 						<img
 							className="h-100"
-							alt={`${player.name}'s Face`}
-							src={player.src}
+							alt={`${profile.name}'s Face`}
+							src={profile.thumbSrc}
 						/>
 					)}
 				</div>
-				{player === 'loading' ? '' : player.name}
+				{profile === 'loading' ? '' : profile.name}
 			</div>
 			<Button
-				disabled={player === 'loading' || status === 'connecting'}
+				disabled={profile === 'loading' || status === 'connecting'}
 				onClick={() => {
-					if (player === 'loading') return;
+					if (profile === 'loading') return;
 					log('Joined game');
-					dispatch(game.actions.playerReqJoin({ id: '4', ...player }));
+					dispatch(player.actions.requestJoin(profile));
 				}}
 			>
 				Start

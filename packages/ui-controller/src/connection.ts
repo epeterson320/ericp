@@ -36,7 +36,7 @@ const slice = createSlice({
 
 const { actions, selectors, reducer } = slice;
 
-const isToHost = (a: AnyAction) => a.meta && a.meta.to === 'host';
+const isToHost = (a: AnyAction) => a.meta && a.meta.to === 'HOST';
 
 function* saga(): SagaIterator {
 	while (true) {

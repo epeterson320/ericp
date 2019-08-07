@@ -1,7 +1,9 @@
 import Client from 'socket.io-client';
 import { promisify } from 'util';
 import SocketGameServer from './SocketGameServer';
-import { actions } from '@crazytown/game-core/src/player';
+import { requestJoin } from '@crazytown/game-core/src/player/actions';
+import { playersUpdated } from '@crazytown/game-core/src/host/actions';
+import { reject } from 'q';
 
 class TestServer extends SocketGameServer {
 	closeP: () => Promise<void> = promisify(this.close);
@@ -9,6 +11,7 @@ class TestServer extends SocketGameServer {
 		return new Promise((res, rej) => {
 			this.once('listening', () => {
 				const address = this.address();
+				if (address === null) return reject();
 				if (typeof address === 'string') res(address);
 				else res(`http://[${address.address}]:${address.port}`);
 			});
@@ -34,20 +37,20 @@ function TestClient(url: string): TestClient {
 	return Object.assign(socket, {
 		openP() {
 			return new Promise<void>((res, rej) => {
-				this.once('connect', res);
-				this.once('connect_error', rej);
-				this.open();
+				socket.once('connect', res);
+				socket.once('connect_error', rej);
+				socket.open();
 			});
 		},
 		closeP() {
 			return new Promise<void>(res => {
-				this.once('disconnect', res);
-				this.close();
+				socket.once('disconnect', res);
+				socket.close();
 			});
 		},
 		next(eventName = 'message') {
 			return new Promise(res => {
-				this.once(eventName, res);
+				socket.once(eventName, res);
 			});
 		},
 	});
@@ -80,29 +83,21 @@ describe('server', () => {
 		await client1.closeP();
 		await server.closeP();
 	});
-});
-
-describe('/game', () => {
-	test('accepts connections', async () => {
-		const url = await server.listenP();
-		client1 = TestClient(url + '/game');
-		await client1.openP();
-		await client1.closeP();
-		await server.closeP();
-	});
 
 	test('accepts actions and sends messages', async () => {
 		const url = await server.listenP();
-		client1 = TestClient(url + '/game');
+		client1 = TestClient(url);
 		const p1Games1 = client1.next();
 		await client1.openP();
 
-		const player = { id: 'hey', name: 'Foo' };
-		client1.emit('action', actions.playerReqJoin(player));
-		const expectedMsg = {
-			type: 'PLAYER_JOINED',
-			payload: player,
-		};
+		const player = { name: 'Foo', thumbSrc: 'some-data' };
+		client1.send(requestJoin(player));
+		const expectedMsg = playersUpdated([
+			{
+				id: expect.any(String),
+				...player,
+			},
+		]);
 
 		await expect(p1Games1).resolves.toEqual(expectedMsg);
 		await client1.closeP();

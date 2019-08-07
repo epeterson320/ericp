@@ -1,12 +1,17 @@
 import { configureStore } from 'redux-starter-kit';
-import createSagaMiddleware from 'redux-saga';
-import { reducer as playerReducer, saga as playerSaga } from './player';
+import createSagaMiddleware, { SagaIterator } from 'redux-saga';
+import { fork } from 'redux-saga/effects';
+import { player } from '@crazytown/game-core';
+import * as profile from './profile';
+import * as connection from './connection';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
 	reducer: {
-		player: playerReducer,
+		profile: profile.reducer,
+		game: player.reducer,
+		connection: connection.reducer,
 	},
 	middleware: [sagaMiddleware],
 });
@@ -14,5 +19,9 @@ const store = configureStore({
 export default store;
 
 export function run() {
-	sagaMiddleware.run(playerSaga);
+	sagaMiddleware.run(function* rootSaga(): SagaIterator {
+		yield fork(profile.saga);
+		yield fork(player.saga);
+		yield fork(connection.saga);
+	});
 }

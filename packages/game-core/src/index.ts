@@ -1,2 +1,3 @@
-import Game, { Action, Message } from './Game';
-export { Game, Action, Message };
+import * as host from './host';
+import * as player from './player';
+export { host, player };

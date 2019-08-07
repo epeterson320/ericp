@@ -5,7 +5,7 @@ import debug from 'debug';
 import constant from 'lodash/constant';
 import noop from 'lodash/noop';
 import { useDispatch } from 'react-redux';
-import { actions, Player } from './player';
+import { actions } from './profile';
 import { RouteComponentProps as Props } from 'react-router';
 
 const log = debug('crazytown:DrawFaceScreen');
@@ -49,7 +49,10 @@ export default function DrawFaceScreen({ history, location }: Props) {
 						const dataUrl = sketchRef.current.toDataURL();
 						log('Submitted image %o', dataUrl);
 						dispatch(
-							actions.setPlayer({ name: location.state.name, src: dataUrl }),
+							actions.setProfile({
+								name: location.state.name,
+								thumbSrc: dataUrl,
+							}),
 						);
 						history.goBack();
 					}}

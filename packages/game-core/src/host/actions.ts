@@ -1,5 +1,12 @@
 import { createAction } from 'redux-starter-kit';
 
+function createBroadcastAction<P = any, T extends string = string>(type: T) {
+	return createAction(type, (payload: P) => ({
+		payload,
+		meta: { to: 'ALL' },
+	}));
+}
+
 export interface Player {
 	id: string;
 	name: string;
@@ -7,10 +14,10 @@ export interface Player {
 }
 export type Players = Array<Player>;
 
-export const playersUpdated = createAction(
+export const playersUpdated = createBroadcastAction<Players, 'PLAYERS_UPDATED'>(
 	'PLAYERS_UPDATED',
-	(payload: Players) => ({
-		payload,
-		meta: { to: 'ALL' },
-	}),
+);
+
+export const counterUpdated = createBroadcastAction<number, 'COUNTER_UPDATED'>(
+	'COUNTER_UPDATED',
 );

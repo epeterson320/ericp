@@ -1,24 +1,31 @@
 import SagaTester from 'redux-saga-tester';
-import { reducer, saga, initialState } from '.';
-import { playersUpdated } from './actions';
-import { requestJoin } from '../player/actions';
+import { reducer, saga, initialState, State } from '.';
+import * as hActions from './actions';
+import * as pActions from '../player/actions';
 
 describe('saga', () => {
-	it('adds players', async () => {
-		const sagaTester = new SagaTester({
+	let sagaTester: SagaTester<State>;
+
+	beforeEach(() => {
+		sagaTester = new SagaTester({
 			reducers: reducer,
 			initialState,
 		});
 		sagaTester.start(saga);
+	});
 
+	it('adds players', async () => {
 		// When a player joins
-		const joinAction = requestJoin({ name: 'Joey', thumbSrc: 'some data' });
-		sagaTester.dispatch(joinAction);
+		sagaTester.dispatch(
+			pActions.requestJoin({ name: 'Joey', thumbSrc: 'some data' }),
+		);
 
 		// The host should send the new list
-		const outgoingAction = await sagaTester.waitFor(playersUpdated.type);
+		const outgoingAction = await sagaTester.waitFor(
+			hActions.playersUpdated.type,
+		);
 		expect(outgoingAction).toEqual(
-			playersUpdated([
+			hActions.playersUpdated([
 				{
 					id: expect.any(String),
 					name: 'Joey',
@@ -26,5 +33,23 @@ describe('saga', () => {
 				},
 			]),
 		);
+	});
+
+	it('updates the counter', async () => {
+		sagaTester.dispatch(pActions.increment());
+		sagaTester.dispatch(pActions.decrement());
+		sagaTester.dispatch(pActions.decrement()); // Ignored, shouldn't go below zero
+		sagaTester.dispatch(pActions.increment());
+		sagaTester.dispatch(pActions.increment());
+		sagaTester.dispatch(pActions.decrement());
+		sagaTester.dispatch(pActions.increment());
+		sagaTester.dispatch(pActions.increment());
+
+		const outgoingAction = sagaTester.waitFor(
+			hActions.counterUpdated.type,
+			true,
+		);
+		sagaTester.dispatch(pActions.increment());
+		await expect(outgoingAction).resolves.toEqual(hActions.counterUpdated(4));
 	});
 });

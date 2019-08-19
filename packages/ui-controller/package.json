@@ -5,7 +5,7 @@
 	"description": "Crazytown player controller client",
 	"dependencies": {
 		"@crazytown/game-core": "*",
-		"@types/reactstrap": "^8.0.1",
+		"@types/reactstrap": "^8.0.2",
 		"bootstrap": "^4.3.1",
 		"jquery": "^3.4.1",
 		"localforage": "^1.7.3",

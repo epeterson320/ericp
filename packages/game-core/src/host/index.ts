@@ -52,4 +52,4 @@ function* counterSaga(): SagaIterator {
 	yield put(hActions.counterUpdated(counter));
 }
 
-export { reducer, saga, State, initialState, hActions as actions };
+export { reducer, saga, initialState, hActions as actions };

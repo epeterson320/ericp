@@ -28,4 +28,4 @@ const reducer = createReducer(initialState, {
 
 function* saga(): SagaIterator {}
 
-export { reducer, pActions as actions, State, saga };
+export { reducer, pActions as actions, saga };

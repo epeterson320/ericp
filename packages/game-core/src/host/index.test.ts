@@ -1,7 +1,9 @@
 import SagaTester from 'redux-saga-tester';
-import { reducer, saga, initialState, State } from '.';
+import { reducer, saga, initialState } from '.';
 import * as hActions from './actions';
 import * as pActions from '../player/actions';
+
+type State = ReturnType<typeof reducer>;
 
 describe('saga', () => {
 	let sagaTester: SagaTester<State>;

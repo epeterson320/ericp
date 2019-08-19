@@ -1,15 +1,15 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
-import store, { run } from './redux';
+import useAppStore from './redux';
 
 const WelcomeScreen = lazy(() => import('./WelcomeScreen'));
 const DrawFaceScreen = lazy(() => import('./DrawFaceScreen'));
 const GameScreen = lazy(() => import('./GameScreen'));
 const NotFound = () => <p>Not found</p>;
 
-export default function App() {
-	React.useEffect(run, []);
+const App: React.FC = () => {
+	const store = useAppStore();
 	return (
 		<ReduxProvider store={store}>
 			<Router>
@@ -24,4 +24,6 @@ export default function App() {
 			</Router>
 		</ReduxProvider>
 	);
-}
+};
+
+export default App;

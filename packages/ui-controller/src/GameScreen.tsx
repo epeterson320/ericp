@@ -8,11 +8,11 @@ import * as connection from './connection';
 export default function GameScreen({ history }: RouteComponentProps) {
 	const state = useSelector(s => s);
 	const game = useSelector((s: any) => s.game as player.State);
-	const connection = useSelector((s: any) => s.connection as connection.State);
+	const conn = useSelector(connection.selectors.getConnection);
 
 	React.useEffect(() => {
-		if (connection.status === 'disconnected') history.replace('/');
-	}, [connection]);
+		if (conn.status === 'disconnected') history.replace('/');
+	}, [conn, history]);
 
 	const dispatch = useDispatch();
 
@@ -37,7 +37,7 @@ export default function GameScreen({ history }: RouteComponentProps) {
 			{game.players.map(player => (
 				<div className="mb-3" key={player.id}>
 					<h2>{player.name}</h2>
-					<img src={player.thumbSrc} />
+					<img src={player.thumbSrc} alt="" />
 				</div>
 			))}
 			<pre>{JSON.stringify(state, null, 4)}</pre>

@@ -5,11 +5,26 @@
 	"author": "Eric Peterson",
 	"private": true,
 	"scripts": {
-		"lint": "echo TODO",
-		"test": "echo TODO",
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"test": "jest",
 		"test-integration": "echo TODO",
 		"start": "echo TODO",
 		"build": "echo TODO",
 		"deploy": "echo TODO"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^2.25.0",
+		"@typescript-eslint/parser": "^2.25.0",
+		"eslint": "^6.8.0",
+		"eslint-plugin-react": "^7.19.0"
+	},
+	"dependencies": {
+		"@babel/core": "^7.9.0",
+		"@babel/preset-env": "^7.9.0",
+		"@babel/preset-typescript": "^7.9.0",
+		"@types/jest": "^25.1.4",
+		"babel-jest": "^25.2.3",
+		"jest": "^25.2.2",
+		"react": "^16.13.1"
 	}
 }

@@ -4,112 +4,12 @@
 	"description": "Mad libs mafia party game",
 	"author": "Eric Peterson",
 	"private": true,
-	"dependencies": {
-		"@babel/core": "^7.5.5",
-		"@babel/preset-env": "^7.5.5",
-		"@babel/preset-react": "^7.0.0",
-		"@babel/preset-typescript": "^7.3.3",
-		"@types/debug": "^4.1.5",
-		"@types/node": "^12.7.2",
-		"@types/jest": "^24.0.18",
-		"@types/lodash": "^4.14.137",
-		"@types/react": "^16.9.2",
-		"@types/react-dom": "^16.8.5",
-		"@types/react-redux": "^7.1.2",
-		"@types/react-router-dom": "^4.3.4",
-		"@types/redux-saga-tester": "^1.0.1",
-		"@types/socket.io": "^2.1.2",
-		"@types/socket.io-client": "^1.4.32",
-		"@typescript-eslint/eslint-plugin": "^1.13.0",
-		"@typescript-eslint/parser": "^1.13.0",
-		"babel-eslint": "^10.0.2",
-		"babel-jest": "^24.9.0",
-		"babel-preset-react-app": "^9.0.1",
-		"debug": "^4.1.1",
-		"eslint": "^5.16.0",
-		"eslint-config-react-app": "^4.0.1",
-		"eslint-plugin-flowtype": "^2.50.3",
-		"eslint-plugin-import": "^2.18.2",
-		"eslint-plugin-jsx-a11y": "^6.2.3",
-		"eslint-plugin-react": "^7.14.3",
-		"eslint-plugin-react-hooks": "^1.7.0",
-		"husky": "^3.0.4",
-		"node-sass": "^4.12.0",
-		"lerna": "^3.16.4",
-		"lint-staged": "^9.2.3",
-		"lodash": "^4.17.15",
-		"prettier": "^1.18.2",
-		"react": "^16.9.0",
-		"react-dom": "^16.9.0",
-		"react-redux": "^7.1.0",
-		"react-scripts": "3.1.1",
-		"redux": "^4.0.4",
-		"redux-saga": "^1.0.5",
-		"redux-starter-kit": "^0.6.3",
-		"redux-saga-tester": "^1.0.526",
-		"socket.io": "^2.2.0",
-		"typescript": "^3.5.3"
-	},
 	"scripts": {
-		"clean": "lerna clean",
-		"start": "DEBUG=\"crazytown:*\" lerna run --scope @crazytown/ui-* --scope @crazytown/host-socketio --parallel start",
-		"lint": "eslint --ext .js,.jsx,.ts,.tsx packages/*/src",
-		"test": "jest"
-	},
-	"workspaces": [
-		"packages/*"
-	],
-	"prettier": {
-		"singleQuote": true,
-		"useTabs": true,
-		"trailingComma": "all"
-	},
-	"eslintConfig": {
-		"extends": "react-app"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
-	"lint-staged": {
-		"packages/*/src/**/*.{js,jsx,ts,tsx}": [
-			"prettier --write",
-			"git add"
-		]
-	},
-	"jest": {
-		"collectCoverageFrom": [
-			"packages/*/src/**/*.{js,jsx,ts,tsx}",
-			"!packages/*/src/**/*.d.ts"
-		],
-		"setupFiles": [
-			"react-app-polyfill/jsdom"
-		],
-		"testMatch": [
-			"<rootDir>/packages/*/src/**/*.test.{js,jsx,ts,tsx}"
-		],
-		"testEnvironment": "jest-environment-jsdom-fourteen",
-		"transform": {
-			"^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-			"^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-			"^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
-		},
-		"transformIgnorePatterns": [
-			"[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
-			"^.+\\.module\\.(css|sass|scss)$"
-		],
-		"moduleNameMapper": {
-			"^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
-		},
-		"moduleFileExtensions": [
-			"js",
-			"ts",
-			"tsx",
-			"jsx"
-		],
-		"projects": [
-			"<rootDir>/projects/*"
-		]
+		"lint": "echo TODO",
+		"test": "echo TODO",
+		"test-integration": "echo TODO",
+		"start": "echo TODO",
+		"build": "echo TODO",
+		"deploy": "echo TODO"
 	}
 }

@@ -1,17 +1,19 @@
 # Crazytown
 
-Mad libs + Mafia + Kingdom of Loathing
+Goal: Mad libs + Mafia + Kingdom of Loathing
 
 ## Architecture
 
-* Game server
-* Public display front-end
-* Player controller front-end
-* Chromecast adapter as game server and display
-* Local web server adapters for game server, display, and controller
+- Game server
+- Public display front-end
+- Player controller front-end
+- Chromecast adapter as game server and display
+- Local web server adapters for game server, display, and controller
 
-Websocket API e.g.:
+## Tasks (not yet implemented)
 
-* `ws://host/game1/watch`
-* `ws://host/game1/player/eric`
-* `ws://host/game1/player/justin`
+- `yarn start`: launch dev display to localhost:3000, and players to :3001 and :3002
+- `yarn test`: unit tests
+- `yarn test-integration`: integration tests
+- `yarn build`: build deployable chromecast package
+- `yarn deploy`: upload build package to chromecast registry

@@ -13,4 +13,9 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:react/recommended",
   ],
+  rules: {
+    '@typescript-eslint/explicit-function-return-type': ['warn', {
+      allowExpressions: true
+    }]
+  }
 };

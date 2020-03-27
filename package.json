@@ -4,12 +4,13 @@
 	"description": "Mad libs mafia party game",
 	"author": "Eric Peterson",
 	"private": true,
+	"license": "MIT",
 	"scripts": {
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"test": "jest",
 		"test-integration": "echo TODO",
-		"start": "echo TODO",
-		"build": "echo TODO",
+		"start": "webpack-dev-server",
+		"build": "webpack",
 		"deploy": "echo TODO"
 	},
 	"devDependencies": {
@@ -24,7 +25,13 @@
 		"@babel/preset-typescript": "^7.9.0",
 		"@types/jest": "^25.1.4",
 		"babel-jest": "^25.2.3",
+		"clean-webpack-plugin": "^3.0.0",
+		"html-webpack-plugin": "^4.0.2",
 		"jest": "^25.2.2",
-		"react": "^16.13.1"
+		"react": "^16.13.1",
+		"ts-loader": "^6.2.2",
+		"webpack": "^4.42.1",
+		"webpack-cli": "^3.3.11",
+		"webpack-dev-server": "^3.10.3"
 	}
 }

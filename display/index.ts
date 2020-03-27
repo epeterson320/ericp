@@ -1,7 +1,5 @@
 import getAppHtml from './getAppHtml';
 
-const rootEl = document.getElementById("root");
-
-if (rootEl) {
-  rootEl.innerHTML = getAppHtml();
-}
+const rootEl = document.createElement('div');
+rootEl.innerHTML = getAppHtml();
+document.body.appendChild(rootEl);

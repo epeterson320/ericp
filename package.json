@@ -13,8 +13,10 @@
     "build": "parcel build ./display/index.html",
     "deploy": "echo TODO"
   },
-  "hooks": {
-    "pre-commit": "yarn test"
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test"
+    }
   },
   "dependencies": {
     "@babel/core": "^7.9.0",

@@ -1,11 +1,5 @@
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    project: ["./tsconfig.json"],
-    ecmaFeatures: { jsx: true }
-  },
-  plugins: ["@typescript-eslint"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -13,6 +7,12 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:react/recommended"
   ],
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: ["./tsconfig.json"],
+    ecmaFeatures: { jsx: true }
+  },
+  plugins: ["@typescript-eslint"],
   overrides: [
     {
       files: "devServers/**",
@@ -22,6 +22,11 @@ module.exports = {
       }
     }
   ],
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  },
   rules: {
     "@typescript-eslint/explicit-function-return-type": [
       "warn",

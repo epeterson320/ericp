@@ -1,6 +1,6 @@
 const nodemon = require("nodemon");
 const path = require("path");
-const displayDevServer = require("./displayDevServer");
+const Bundler = require('parcel-bundler');
 
 nodemon({
   script: path.resolve(__dirname, "runWsHost.js"),
@@ -8,6 +8,6 @@ nodemon({
   watch: [path.resolve(__dirname, "runWsHost.js")]
 });
 
-displayDevServer.listen(3001, function() {
-  console.log("Example app listening on port 3001");
-});
+const displayEntry =  path.join(__dirname, '../display/index.html');
+const displayBundler = new Bundler(displayEntry, { watch: true });
+displayBundler.serve(3001);

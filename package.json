@@ -13,6 +13,9 @@
     "build": "parcel build ./display/index.html",
     "deploy": "echo TODO"
   },
+  "hooks": {
+    "pre-commit": "yarn test"
+  },
   "dependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
@@ -29,6 +32,7 @@
     "eslint-plugin-react": "^7.19.0",
     "express": "^4.17.1",
     "html-webpack-plugin": "^4.0.2",
+    "husky": "^4.2.3",
     "jest": "^25.2.2",
     "nodemon": "^2.0.2",
     "parcel": "^1.12.4",

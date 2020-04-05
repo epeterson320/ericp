@@ -1,10 +1,10 @@
 const WebSocket = require("ws");
 
 const wss = new WebSocket.Server({
-  port: 3000
+  noServer: true
 });
 
-let count = 10;
+let count = 30;
 
 wss.on("connection", function onConnection(ws) {
   ws.on("message", function onMessage(message) {
@@ -13,4 +13,7 @@ wss.on("connection", function onConnection(ws) {
     ws.send(`pinged ${count} times`);
   });
   ws.send(`pinged ${count} times`);
+
 });
+
+module.exports = wss;

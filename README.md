@@ -17,3 +17,27 @@ Goal: Mad libs + Mafia + Kingdom of Loathing
 - `yarn test-integration`: integration tests
 - `yarn build`: build deployable chromecast package
 - `yarn deploy`: upload build package to chromecast registry
+
+## TODO in v1
+
+- Players join lobby
+- All start
+- Show counters
+- Show win & play again
+- On disconnect, pause & show disc/cancel game/boot player/countdown to cancel
+
+## TODO in v2
+
+- Show questions on start
+- Show roles to individuals
+- Show targets to mafia
+- Mafia confirm targets
+- Show victim
+- Show villager vote proposals
+- second proposal
+- vote
+- show if hung
+- if 30s pass, show next day
+- if no mafia remaining, villagers win
+- if no villagers remaining, mafia wins
+

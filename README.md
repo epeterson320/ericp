@@ -2,27 +2,22 @@
 
 Goal: Mad libs + Mafia + Kingdom of Loathing
 
-## Architecture
+## TODO in v0
 
-- Game server
-- Public display front-end
-- Player controller front-end
-- Chromecast adapter as game server and display
-- Local web server adapters for game server, display, and controller
-
-## Tasks (not yet implemented)
-
-- `yarn start`: launch dev display to localhost:3000, and players to :3001 and :3002
+- `yarn start`: launch display and player controllers to localhost
 - `yarn test`: unit tests
-- `yarn test-integration`: integration tests
+- `yarn test:integration`: integration tests
 - `yarn build`: build deployable chromecast package
 - `yarn deploy`: upload build package to chromecast registry
+- Register chromecast app.
+- Loading & connected reciever app screens.
+- Sender app with counter.
 
 ## TODO in v1
 
 - Players join lobby
 - All start
-- Show counters
+- Show counter
 - Show win & play again
 - On disconnect, pause & show disc/cancel game/boot player/countdown to cancel
 

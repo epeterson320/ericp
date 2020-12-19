@@ -5,6 +5,7 @@
 <body>
   <h1>Crazytown Sender App</h1>
   <google-cast-launcher style="display: block; width: 40px;"></google-cast-launcher>
+  <button id="increment">Increase</button>
   <script>
     window['__onGCastApiAvailable'] = function(isAvailable) {
       console.log(isAvailable ? 'Cast available' : 'Cast not available');
@@ -17,12 +18,12 @@
         receiverApplicationId: '3795DE18',
         autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
       });
-
-      var castSession = cast.framework.CastContext.getInstance().getCurrentSession();
-      console.log('Session', castSession);
-      
-      // DO something.
     }
+    let btn = document.getElementById('increment');
+    btn.addEventListener('click', () => {
+      var castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+      castSession.sendMessage('urn:x-cast:increment');
+    });
   </script>
   <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 </body>

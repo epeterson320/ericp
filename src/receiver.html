@@ -4,9 +4,17 @@
     src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
 </head>
 <body style="background-color: white;">
-	<h1>Welcome to Crazytown</h1>
+  <h1>Welcome to Crazytown</h1>
+  <p>The count is <span id="count">0</span>.</p>
   <script>
-    cast.framework.CastReceiverContext.getInstance().start();
+    const countEl = document.getElementById('count');
+    let count = 0;
+    const ctx = cast.framework.CastReceiverContext.getInstance();
+    ctx.start();
+    ctx.addCustomMessageListener('urn:x-cast:increment', () => {
+      count++;
+      countEl.innerText = count.toString();
+    });
   </script>
 </body>
 </html>

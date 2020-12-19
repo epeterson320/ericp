@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://gitlab.com/ericp/crazytown.git",
   "author": "Eric Peterson <github@ericp.co>",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "cp -r src build"
+  }
 }

@@ -4,9 +4,11 @@
   <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 </head>
 <body>
+  <h1>Crazytown Sender App</h1>
   <google-cast-launcher></google-cast-launcher>
   <script>
     window['__onGCastApiAvailable'] = function(isAvailable) {
+      console.log(isAvailable ? 'Cast available' : 'Cast not available');
       if (isAvailable) {
         initializeCastApi();
       }
@@ -18,6 +20,8 @@
       });
 
       var castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+      console.log('Session', castSession);
+      
       // DO something.
     }
   </script>

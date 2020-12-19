@@ -10,11 +10,11 @@
     const countEl = document.getElementById('count');
     let count = 0;
     const ctx = cast.framework.CastReceiverContext.getInstance();
-    ctx.start();
     ctx.addCustomMessageListener('urn:x-cast:increment', () => {
       count++;
       countEl.innerText = count.toString();
     });
+    ctx.start();
   </script>
 </body>
 </html>

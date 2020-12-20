@@ -29,6 +29,8 @@
       });
 
       ctx.addEventListener('SESSION_STATE_CHANGED', function({ session, sessionState, errorCode }) {
+        console.log('Session state changed');
+        console.log(session, sessionState, errorCode);
         if (session) {
           btn.style.display = 'block';
           btn.onclick = () => castSession.sendMessage(MSG_NAMESPACE, {});

@@ -27,7 +27,7 @@
         autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
       });
 
-      ctx.addEventListener('SESSION_STATE_CHANGED', function({ session, sessionState, errorCode }) {
+      ctx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function({ session, sessionState, errorCode }) {
         console.log('Session state changed');
         console.log(session, sessionState, errorCode);
         if (session) {
@@ -45,7 +45,7 @@
           btn.classList.remove('btn-primary');
         }
       });
-
+      
     }
   </script>
   <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>

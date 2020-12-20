@@ -11,11 +11,16 @@
     const countEl = document.getElementById('count');
     let count = 0;
     const ctx = cast.framework.CastReceiverContext.getInstance();
-    ctx.addCustomMessageListener('urn:x-cast:co.ericp.crazytown', (arg1, arg2) => {
-      console.log('custom message', arg1, arg2);
+    ctx.addCustomMessageListener('urn:x-cast:co.ericp.crazytown', ({ data, senderId }) => {
+      console.log('custom message from ', senderId, data);
       count++;
       countEl.innerText = count.toString();
     });
+    ctx.sendCustomMessage(
+      'urn:x-cast:co.ericp.crazytown',
+      undefined,
+      { foo: 'bar' }
+    );
     ctx.start();
   </script>
 </body>

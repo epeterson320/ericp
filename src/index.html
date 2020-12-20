@@ -31,12 +31,12 @@
         console.log('Session state changed');
         console.log(session, sessionState, errorCode);
         if (sessionState === 'SESSION_STARTED') {
-          btn.addEventListener('click', () => {
+          btn.onclick = () => {
             session.sendMessage(MSG_NAMESPACE, {
               type: 'INCREMENT',
               payload: {},
             });
-          });
+          };
           btn.disabled = false;
           session.addMessageListener(MSG_NAMESPACE, (namespace, stringMessage) => {
             const message = JSON.parse(stringMessage);

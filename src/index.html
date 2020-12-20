@@ -33,7 +33,7 @@
       ctx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function({ session, sessionState, errorCode }) {
         console.log('Session state changed');
         console.log(session, sessionState, errorCode);
-        if (sessionState === 'SESSION_STARTED') {
+        if (sessionState === 'SESSION_STARTED' || sessionState === 'SESSION_RESUMED') {
           btn.onclick = () => {
             session.sendMessage(MSG_NAMESPACE, {
               type: 'INCREMENT',

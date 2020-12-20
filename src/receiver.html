@@ -13,14 +13,18 @@
     const ctx = cast.framework.CastReceiverContext.getInstance();
     ctx.addCustomMessageListener('urn:x-cast:co.ericp.crazytown', ({ data, senderId }) => {
       console.log('custom message from ', senderId, data);
-      count++;
-      countEl.innerText = count.toString();
+
+      if (data.type === 'INCREMENT') {
+        count++;
+        countEl.innerText = count.toString();
+
+        ctx.sendCustomMessage(
+          'urn:x-cast:co.ericp.crazytown',
+          undefined,
+          { type: 'COUNT_CHANGED', payload: count }
+        );
+      }
     });
-    ctx.sendCustomMessage(
-      'urn:x-cast:co.ericp.crazytown',
-      undefined,
-      { foo: 'bar' }
-    );
     ctx.start();
   </script>
 </body>

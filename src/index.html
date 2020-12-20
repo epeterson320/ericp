@@ -30,7 +30,7 @@
       ctx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function({ session, sessionState, errorCode }) {
         console.log('Session state changed');
         console.log(session, sessionState, errorCode);
-        if (session) {
+        if (sessionState === 'SESSION_STARTED') {
           btn.classList.add('btn-primary');
           btn.addEventListener('click', () => {
             session.sendMessage(MSG_NAMESPACE, {
@@ -40,12 +40,14 @@
           });
           session.addMessageListener(MSG_NAMESPACE, (namespace, message) => {
             console.log(`Recieved message from ${namespace}`, message);
+            if (message.type === 'COUNT_CHANGED') {
+              console.log('The button was clicked ', message.payload, ' times.');
+            }
           });
         } else {
           btn.classList.remove('btn-primary');
         }
       });
-      
     }
   </script>
   <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>

@@ -4,11 +4,20 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "2.15.0"
     }
+    netlify = {
+      source = "AegirHealth/netlify"
+      version = "0.6.12"
+    }
   }
 }
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
+}
+
+provider "netlify" {
+  token = var.netlify_access_token
+  base_url = "https://api.netlify.com/api/v1"
 }
 
 resource "cloudflare_zone" "ericp" {

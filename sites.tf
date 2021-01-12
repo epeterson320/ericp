@@ -14,6 +14,19 @@ resource "cloudflare_record" "www" {
   proxied = true
 }
 
+resource "netlify_site" "codeck" {
+  name = "infallible-liskov-79ba9c"
+  custom_domain = "codeck.ericp.co"
+
+  repo {
+    command = "yarn build"
+    dir = "dist"
+    provider = "github"
+    repo_path = "epeterson320/codeck"
+    repo_branch = "master"
+  }
+}
+
 resource "cloudflare_record" "codeck" {
   zone_id = cloudflare_zone.ericp.id
   name    = "codeck"

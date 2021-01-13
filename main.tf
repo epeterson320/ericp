@@ -1,23 +1,31 @@
 terraform {
   required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "2.15.0"
+    github = {
+      source = "hashicorp/github"
+      version = "4.1.0"
     }
     netlify = {
       source = "AegirHealth/netlify"
       version = "0.6.12"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "2.15.0"
+    }
   }
 }
 
-provider "cloudflare" {
-  api_token = var.cloudflare_api_token
+provider "github" {
+  token = var.github_token
 }
 
 provider "netlify" {
   token = var.netlify_access_token
   base_url = "https://api.netlify.com/api/v1"
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 resource "cloudflare_zone" "ericp" {

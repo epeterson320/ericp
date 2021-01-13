@@ -28,7 +28,7 @@ resource "cloudflare_record" "a" {
 resource "cloudflare_record" "www" {
   zone_id = cloudflare_zone.ericp.id
   name    = "www"
-  value   = "ericp.netlify.com"
+  value   = "ericp.netlify.app"
   type    = "CNAME"
   proxied = true
 }
@@ -41,7 +41,7 @@ resource "github_repository" "codeck" {
 }
 
 resource "netlify_site" "codeck" {
-  name = "infallible-liskov-79ba9c"
+  name = "ericp-codeck"
   custom_domain = "codeck.ericp.co"
 
   repo {
@@ -56,7 +56,7 @@ resource "netlify_site" "codeck" {
 resource "cloudflare_record" "codeck" {
   zone_id = cloudflare_zone.ericp.id
   name    = "codeck"
-  value   = "${netlify_site.codeck.name}.netlify.com"
+  value   = "${netlify_site.codeck.name}.netlify.app"
   type    = "CNAME"
   proxied = true
 }
@@ -94,14 +94,14 @@ resource "github_repository" "triangle_calculator" {
 }
 
 resource "netlify_site" "triangle_calculator" {
-  name = "stoic-cray-54e6f3"
+  name = "triangle-calculator"
   custom_domain = "triangle-calculator.ericp.co"
 
   repo {
     command = "yarn build"
     dir = "build"
     provider = "github"
-    repo_path = "epeterson320/triangle-calculator"
+    repo_path = github_repository.triangle_calculator.full_name
     repo_branch = "master"
   }
 }
@@ -109,9 +109,27 @@ resource "netlify_site" "triangle_calculator" {
 resource "cloudflare_record" "triangle_calculator" {
   zone_id = cloudflare_zone.ericp.id
   name    = "triangle-calculator"
-  value   = "stoic-cray-54e6f3.netlify.com"
+  value   = "${netlify_site.triangle_calculator.name}.netlify.app"
   type    = "CNAME"
   proxied = true
+}
+
+resource "github_repository" "ericp" {
+  name = "ericp"
+  description = "Infrastructure and sites at ericp.co"
+  has_issues = true
+}
+
+resource "netlify_site" "kqp33" {
+  name = "kqp33"
+  custom_domain = "kqp33.ericp.co"
+
+  repo {
+    dir = "kqp33"
+    provider = "github"
+    repo_path = github_repository.ericp.full_name
+    repo_branch = github_repository.ericp.default_branch
+  }
 }
 
 resource "cloudflare_record" "kqp33" {
@@ -122,10 +140,22 @@ resource "cloudflare_record" "kqp33" {
   proxied = true
 }
 
+resource "netlify_site" "namemypub" {
+  name = "namemypub"
+  custom_domain = "namemypub.ericp.co"
+
+  repo {
+    dir = "namemypub"
+    provider = "github"
+    repo_path = github_repository.ericp.full_name
+    repo_branch = github_repository.ericp.default_branch
+  }
+}
+
 resource "cloudflare_record" "namemypub" {
   zone_id = cloudflare_zone.ericp.id
   name    = "namemypub"
-  value   = "elastic-bassi-1e2f82.netlify.com"
+  value   = "${netlify_site.namemypub.name}.netlify.app"
   type    = "CNAME"
   proxied = true
 }

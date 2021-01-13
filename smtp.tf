@@ -1,39 +1,15 @@
 resource "cloudflare_record" "smtp" {
-  zone_id  = cloudflare_zone.ericp.id
-  name     = "ericp.co"
-  value    = "gmr-smtp-in.l.google.com"
-  type     = "MX"
-  priority = 5
-}
+  for_each = {
+    main = ["gmr-smtp-in.l.google.com", 5]
+    alt1 = ["alt1.gmr-smtp-in.l.google.com", 10]
+    alt2 = ["alt2.gmr-smtp-in.l.google.com", 20]
+    alt3 = ["alt3.gmr-smtp-in.l.google.com", 30]
+    alt4 = ["alt4.gmr-smtp-in.l.google.com", 40]
+  }
 
-resource "cloudflare_record" "smtp_alt1" {
   zone_id  = cloudflare_zone.ericp.id
-  name     = "ericp.co"
-  value    = "alt1.gmr-smtp-in.l.google.com"
+  name     = cloudflare_zone.ericp.zone
   type     = "MX"
-  priority = 10
-}
-
-resource "cloudflare_record" "smtp_alt2" {
-  zone_id  = cloudflare_zone.ericp.id
-  name     = "ericp.co"
-  value    = "alt2.gmr-smtp-in.l.google.com"
-  type     = "MX"
-  priority = 20
-}
-
-resource "cloudflare_record" "smtp_alt3" {
-  zone_id  = cloudflare_zone.ericp.id
-  name     = "ericp.co"
-  value    = "alt3.gmr-smtp-in.l.google.com"
-  type     = "MX"
-  priority = 30
-}
-
-resource "cloudflare_record" "smtp_alt4" {
-  zone_id  = cloudflare_zone.ericp.id
-  name     = "ericp.co"
-  value    = "alt4.gmr-smtp-in.l.google.com"
-  type     = "MX"
-  priority = 40
+  value    = each.value[0]
+  priority = each.value[1]
 }

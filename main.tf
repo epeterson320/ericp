@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     github = {
-      source = "hashicorp/github"
+      source  = "hashicorp/github"
       version = "4.1.0"
     }
     netlify = {
-      source = "AegirHealth/netlify"
+      source  = "AegirHealth/netlify"
       version = "0.6.12"
     }
     cloudflare = {
@@ -20,7 +20,7 @@ provider "github" {
 }
 
 provider "netlify" {
-  token = var.netlify_access_token
+  token    = var.netlify_access_token
   base_url = "https://api.netlify.com/api/v1"
 }
 

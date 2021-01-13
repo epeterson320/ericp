@@ -17,18 +17,18 @@ resource "netlify_site" "blog" {
   }
 }
 
-resource "cloudflare_record" "a" {
+resource "cloudflare_record" "domain_root" {
   zone_id = cloudflare_zone.ericp.id
-  name    = "ericp.co"
-  value   = "104.198.14.52"
-  type    = "A"
+  name    = "@"
+  value   = "${netlify_site.blog.name}.netlify.app"
+  type    = "CNAME"
   proxied = true
 }
 
 resource "cloudflare_record" "www" {
   zone_id = cloudflare_zone.ericp.id
   name    = "www"
-  value   = "ericp.netlify.app"
+  value   = "${netlify_site.blog.name}.netlify.app"
   type    = "CNAME"
   proxied = true
 }
@@ -159,15 +159,3 @@ resource "cloudflare_record" "namemypub" {
   type    = "CNAME"
   proxied = true
 }
-/* Nice to have module like:
-
-static-site site-name {
-  repo String = thisrepo
-  baseDir String = ./
-  domain String = ericp.co
-  subdomain String required
-  buildCmd String = yarn build
-  publishDir = baseDir
-}
-
-*/

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Brewery Name Generator</title>
+    <meta name="description" content="Find the name for your next brewery">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:url" content="https://ericp.co" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Brewery Name Generator" />
+    <meta property="og:description" content="Find a name for the brewery you're about to open." />
+    <style>
+* {
+  box-sizing: border-box;
+}
+html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+body {
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 30rem;
+  font-family: sans-serif;
+  overflow-x: hidden;
+  background-color: aliceblue;
+}
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-family: cursive;
+}
+p {
+  font-size: 1rem;
+}
+.fadeOut {
+  opacity: 0;
+  transform: rotate(-30deg);
+}
+.initial {
+  opacity: 0;
+  transform: rotate(30deg);
+}
+#breweryName {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+#breweryName p {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  transition: all 0.5s ease-in-out;
+  transform-origin: 50% 30rem;
+  font-weight: 600;
+}
+#getNameButton {
+  appearance: none;
+  align-self: center;
+  background-color: darkslateblue;
+  color: white;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  min-width: 16rem;
+  z-index: 1;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.20);
+}
+.share {
+  align-self: center;
+  transition: opacity 0.5s ease-out;
+}
+.hidden {
+  opacity: 0;
+}
+    </style>
+  </head>
+  <body>
+    <h1>Brewery Name Generator</h1>
+    <p>Starting a dope new brewery but can't think of a name? Click the button and look no further.</p>
+    <button id="getNameButton">Get a name</button>
+    <div id="breweryName">
+      <p class="fadeOut"></p>
+      <p> </p>
+    </div>
+    <a href="https://twitter.com/intent/tweet" class="share hidden">Tweet</a>
+    <script>
+const words = {
+noun: [
+'Backbone',
+'Beard',
+'Castle',
+'Danger',
+'Fantasy',
+'Frog',
+'Goat Face',
+'Grove',
+'Hands',
+'Jetpack',
+'Justice',
+'Pint',
+'Platypus',
+'Pug',
+'Snake Eyes',
+'Starfish',
+'Stone'
+],
+adjective: [
+'Angry',
+'Bitter',
+'Crispy',
+'Dank',
+'Dapper',
+'Dirty',
+'Filthy',
+'Flappy',
+'Gifted',
+'Grody',
+'Hoppy',
+'Juicy',
+'Jurassic',
+'Original',
+'Perennial',
+'Rowdy',
+'Sour',
+'Surly',
+'Wicked',
+// posessives
+"Ben's",
+"Devil's",
+"Marilyn's",
+"Dan's",
+"Sandy's"
+],
+dim: [
+"lil' ",
+'Mc',
+'Mrs. ',
+"ol' ",
+'Uncle ',
+],
+company: [
+'Aleworks',
+'Brewing Co.',
+'Brewing Co.',
+'Brewing Co.',
+'Brewing Co.',
+'Brewing Co.',
+'Brewing Co.',
+'Cider Works',
+'Lager Land'
+],
+};
+
+const getNameButton = document.getElementById('getNameButton');
+const breweryNameDiv = document.getElementById('breweryName');
+const twitterShare = document.getElementsByClassName('share')[0];
+
+getNameButton.addEventListener('click', function onGetName(e) {
+  const pToRemove = breweryNameDiv.children[0];
+  const pToFadeOut = breweryNameDiv.children[1];
+  const pToFadeIn = breweryNameDiv.children[2];
+  const pToAdd = makeInitialP();
+
+  e.target.innerText = 'Get another name';
+  twitterShare.href = "https://twitter.com/intent/tweet"
+    + "?text=" + encodeURIComponent(pToFadeIn.innerText)
+    + '&url=' + encodeURIComponent(document.location);
+  twitterShare.classList.remove('hidden');
+  breweryNameDiv.removeChild(pToRemove);
+  pToFadeOut.classList.add('fadeOut');
+  pToFadeIn.classList.remove('initial');
+  breweryNameDiv.appendChild(pToAdd);
+});
+
+function makeInitialP() {
+  const p = document.createElement('p');
+  p.classList.add('initial');
+  p.innerText = generateName();
+  return p;
+}
+
+function generateName() {
+  const rand = Math.random();
+  if (rand < 0.75) {
+    return getRandom('adjective') + ' ' + getRandom('noun') + ' ' + getRandom('company');
+  } else if (rand < 0.92) {
+    return getRandom('noun') + ' ' + getRandom('noun') + ' ' + getRandom('company');
+  } else {
+    return getRandom('adjective') + ' ' + getRandom('dim') + getRandom('noun') + ' ' + getRandom('company');
+  }
+}
+
+const getRandom = function initGetRandomModule(words) {
+  const previous = {};
+
+  function getRandom(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  return function getRandomNoDupes(wordType) {
+    const wordArray = words[wordType];
+    const prevWord = previous[wordType];
+    let word = getRandom(wordArray);
+    if (wordType === 'company') return word; // dupes are ok for company
+    while (word === prevWord) {
+      word = getRandom(wordArray);
+    }
+    previous[wordType] = word;
+    return word;
+  };
+}(words);
+
+breweryNameDiv.appendChild(makeInitialP());
+    </script>
+  </body>
+</html>

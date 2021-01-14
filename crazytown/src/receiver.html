@@ -1,0 +1,34 @@
+ <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body style="background-color: white;">
+  <h1>Click the Button!</h1>
+  <p>How many times did you click the button?</p>
+  <p id="count" style="font-size: 75vh">0</p>
+  <script>
+    const countEl = document.getElementById('count');
+    let count = 0;
+    const ctx = cast.framework.CastReceiverContext.getInstance();
+    ctx.addCustomMessageListener('urn:x-cast:co.ericp.crazytown', ({ data, senderId }) => {
+      console.log('custom message from ', senderId, data);
+
+      if (data.type === 'INCREMENT') {
+        count++;
+        countEl.innerText = count.toString();
+
+        ctx.sendCustomMessage(
+          'urn:x-cast:co.ericp.crazytown',
+          undefined,
+          { type: 'COUNT_CHANGED', payload: count }
+        );
+      }
+    });
+    ctx.start();
+  </script>
+</body>
+</html>
